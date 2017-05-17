@@ -84,7 +84,14 @@ elseif strcmp(activity,'fastWalk_')
     data_fastWalk = data_out;
 elseif strcmp(activity,'standing_')  
     data_standing = data_out;
-end
+    elseif strcmp(activity,'stairs_')  
+    data_standing = data_out;
+    elseif strcmp(activity,'standing_')  
+    data_standing = data_out;
+    elseif strcmp(activity,'standing_')  
+    data_standing = data_out;
+    elseif strcmp(activity,'standing_')  
+    data_standing = data_out;
     
     
 %% Section 2: calculate MAV, Variance, NZERO, etc
