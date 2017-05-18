@@ -14,9 +14,10 @@ ind2 = 1;
 for k = 1:9
     num = strcat('00',num2str(k));
     trialname = strcat(activity,num);
-    %trialname = strcat('BP_C_002_crouch_',num);
+    %trialname = strcat('BP_C_002_',activity,num);
 
     data_in = dlmread(strcat('../BP_C_001/',trialname,'.csv'),',',6,15);
+    %data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,15);
 
     %remove vicon sensor delay
     data_cut = data_in(cut:end,:);
@@ -36,9 +37,10 @@ end
 for k = 10:99
     num = strcat('0',num2str(k));
     trialname = strcat(activity,num);
-    %trialname = strcat('BP_C_002_crouch_',num);
+    %trialname = strcat('BP_C_002_',activity,num);
 
     data_in = dlmread(strcat('../BP_C_001/',trialname,'.csv'),',',6,15);
+    %data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,15);
 
     %remove vicon sensor delay
     data_cut = data_in(cut:end,:);
@@ -56,9 +58,10 @@ end
 for k = 100:150
     num = num2str(k);
     trialname = strcat(activity,num);
-    %trialname = strcat('BP_C_002_crouch_',num);
+    %trialname = strcat('BP_C_002_',activity,num);
 
     data_in = dlmread(strcat('../BP_C_001/',trialname,'.csv'),',',6,15);
+    %data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,15);
 
     %remove vicon sensor delay
     data_cut = data_in(cut:end,:);
@@ -85,9 +88,10 @@ elseif strcmp(activity,'fastWalk_')
 elseif strcmp(activity,'standing_')  
     data_standing = data_out;
 end
+
+clearvars data_out
     
-    
-%% Section 2: calculate MAV, Variance, NZERO, etc
+%% Section 2: calculate MAV, Variance, Nzero, etc
 
 %% section 3: save data as .mat
 
