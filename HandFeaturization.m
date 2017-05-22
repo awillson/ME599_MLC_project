@@ -100,23 +100,38 @@ zcd = dsp.ZeroCrossingDetector;
 for i = 1:trial
     
     for n = 1:sensor
-    %Mean Average Value
+    % Mean Average Value
+    data_out(1,n,i) = mean(data_crouch(:,n,i));
     MAV(n,i) = mean(data_crouch(:,n,i));
 
-    %Number of zero crosssings
+    % Number of zero crosssings
+    data_out(2,n,i) = zcd(data_crouch(:,n,i));
     Ncross(n,i) = zcd(data_crouch(:,n,i));
 
-    %varaince
+    % Variance
+    data_out(3,n,i) = var(data_crouch(:,n,i));
     variance(n,i) = std(data_crouch(:,n,i));
 
-    %number of slope sign changes
+    % Number of slope sign changes
     slope = diff(sign(diff(data_crouch(:,n,i))))~=0;
     slope = slope(slope~=0);
     slope = length(slope);
     Nslope(n,i) = slope;
+    [a,b] = findpeaks(data_crouch(:,n,i));
+    [c,d] = findpeaks(-data_crouch(:,n,i));
+    data_out(4,n,i) = length(a)+length(b);
+    
+    % Waveform length
+    wavl = 0;
+    current = 0;
+    for p = 1:signal-1
+        current = abs(data_crouch(p+1,n,i) - data_crouch(p,n,i));
+        wavl = wavl+current;
+    end
+    data_out(5,n,i) = wavl;
+    
     end
 end
 
 %% section 3: save data as .mat
 
-% Hey what up
