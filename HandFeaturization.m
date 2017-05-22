@@ -89,9 +89,33 @@ elseif strcmp(activity,'standing_')
     data_standing = data_out;
 end
 
+[signal, sensor, trial] = size(data_out);
 clearvars data_out
     
 %% Section 2: calculate MAV, Variance, Nzero, etc
+
+zcd = dsp.ZeroCrossingDetector;
+
+%each column is a "trial", 16 sensors long
+for i = 1:trial
+    
+    for n = 1:sensor
+    %Mean Average Value
+    MAV(n,i) = mean(data_crouch(:,n,i));
+
+    %Number of zero crosssings
+    Ncross(n,i) = zcd(data_crouch(:,n,i));
+
+    %varaince
+    variance(n,i) = std(data_crouch(:,n,i));
+
+    %number of slope sign changes
+    slope = diff(sign(diff(data_crouch(:,n,i))))~=0;
+    slope = slope(slope~=0);
+    slope = length(slope);
+    Nslope(n,i) = slope;
+    end
+end
 
 %% section 3: save data as .mat
 
