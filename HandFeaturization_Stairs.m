@@ -6,7 +6,7 @@ tic
 %% Section 1: read in data, slice into 150 ms cube
 dt = 1/1200;
 time = 0:dt:3;
-n = int16(.150/dt); %row length of 150 ms sample
+n = int16(.150/dt); % row length of 150 ms sample
 cut = int16(.512/dt);
 activity = 'stairs_';
 participant = 1;
