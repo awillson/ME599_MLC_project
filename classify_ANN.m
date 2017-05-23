@@ -1,4 +1,4 @@
-%% Try Out ANN on our Data Set
+%% Try Out ANN on our Data Set!
 
 clear; close all; clc;
 
