@@ -113,3 +113,7 @@ end
 ourStandingPrediction = ourStandingPrediction';
 e = find(strcmp(ourStandingPrediction,'standing'));
 accuracyStanding = length(e)/1200;
+
+meanAccuracy = mean([accuracyCrouch; accuracyFast; accuracySitting;...
+                        accuracySlow; accuracyStanding]);
+
