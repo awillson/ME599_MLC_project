@@ -1,4 +1,4 @@
-%% Try Out LDA on our Data Set
+%% Try Out ANN on our Data Set
 
 clear; close all; clc;
 
@@ -70,13 +70,13 @@ testingLabels = testingLabels';
 %% Create the classifier
 
 % Can't believe it's this easy.
-LDAclassifier = fitcdiscr(trainingData,trainingLabels);
+DecisionTreeclassifier = fitctree(trainingData,trainingLabels);
 
 %% Evaluate the classifier on the test data
 
 % Test crouching
 for i = 1:1200
-   ourCrouchPrediction(i) = predict(LDAclassifier, testingData(i,:));
+   ourCrouchPrediction(i) = predict(DecisionTreeclassifier, testingData(i,:));
 end
 ourCrouchPrediction = ourCrouchPrediction';
 a = find(strcmp(ourCrouchPrediction,'crouch'));
@@ -84,7 +84,7 @@ accuracyCrouch = length(a)/1200;
 
 % Test fastWalk
 for i = 1:1200
-    ourFastPrediction(i) = predict(LDAclassifier, testingData(i+1200,:));
+    ourFastPrediction(i) = predict(DecisionTreeclassifier, testingData(i+1200,:));
 end
 ourFastPrediction = ourFastPrediction';
 b = find(strcmp(ourFastPrediction,'fastWalk'));
@@ -92,7 +92,7 @@ accuracyFast = length(b)/1200;
 
 % Test sitting
 for i = 1:1200
-    ourSittingPrediction(i) = predict(LDAclassifier, testingData(i+2400,:));
+    ourSittingPrediction(i) = predict(DecisionTreeclassifier, testingData(i+2400,:));
 end
 ourSittingPrediction = ourSittingPrediction';
 c = find(strcmp(ourSittingPrediction,'sitting'));
@@ -100,7 +100,7 @@ accuracySitting = length(c)/1200;
 
 % Test slow walking
 for i = 1:1200
-    ourSlowPrediction(i) = predict(LDAclassifier, testingData(i+3600,:));
+    ourSlowPrediction(i) = predict(DecisionTreeclassifier, testingData(i+3600,:));
 end
 ourSlowPrediction = ourSlowPrediction';
 d = find(strcmp(ourSlowPrediction,'slowWalk'));
@@ -108,8 +108,11 @@ accuracySlow = length(d)/1200;
 
 % Test standing
 for i = 1:1200
-    ourStandingPrediction(i) = predict(LDAclassifier, testingData(i+4800,:));
+    ourStandingPrediction(i) = predict(DecisionTreeclassifier, testingData(i+4800,:));
 end
 ourStandingPrediction = ourStandingPrediction';
 e = find(strcmp(ourStandingPrediction,'standing'));
 accuracyStanding = length(e)/1200;
+
+meanAccuracy = mean([accuracyCrouch; accuracyFast; accuracySitting;...
+                        accuracySlow; accuracyStanding]);
