@@ -116,3 +116,8 @@ accuracyStanding = length(e)/1200;
 
 meanAccuracy = mean([accuracyCrouch; accuracyFast; accuracySitting;...
                         accuracySlow; accuracyStanding]);
+                    
+%%
+tic
+predict(DecisionTreeclassifier, testingData(i+3600,:))
+toc
