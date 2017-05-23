@@ -13,7 +13,7 @@ participant = 1;
 
 %data_out = zeros(n,16,16*9);
 ind2 = 1;
-for k = 1:3
+for k = 1:9
     
     num = strcat('00',num2str(k));
     trialname = strcat(activity,num);
@@ -36,31 +36,6 @@ for k = 1:3
     end
     
 end
-
-for k = 5:9
-    
-    num = strcat('00',num2str(k));
-    trialname = strcat(activity,num);
-    %trialname = strcat('BP_C_002_',activity,num);
-
-    data_in = dlmread(strcat('../BP_C_001/',trialname,'.csv'),',',6,15);
-    %data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,15);
-
-    %remove vicon sensor delay
-    data_cut = data_in(cut:end,:);
-    
-    %chop into slices
-    ind = 1;
-    iter = 1;
-    for j = ind2:ind2+15
-        ind = n*(iter-1)+1;
-        data_out(:,:,j) = data_cut(ind:(ind+n-1),:);
-        ind2 = ind2+1;
-        iter = iter+1;
-    end
-    
-end
-
 
 for k = 10:99
     num = strcat('0',num2str(k));
@@ -145,7 +120,33 @@ for i = 1:trial
     end
 end
 
+keyboard
+
 %% section 3: save data as .mat
+count = 1;
+count_descend = 0;
+count_ascend = 0;
+for i = 0:16:4784
+    i
+%     keyboard
+    if mod(count,2) == 0
+        % even
+        for sheet = 1:16
+            stair_descend(:,:,count_descend+sheet) = data_feat(:,:,i+sheet);
+        end
+        count_descend = count_descend+16;
+    else
+        for sheet = 1:16
+            stair_ascend(:,:,count_ascend+sheet) = data_feat(:,:,i+sheet);
+        end
+        count_ascend = count_ascend+16;
+    end
+    
+    count = count + 1;
+end
+
+%%
+    
 f = 1;
 g = 1;
 for i = 1:trial
