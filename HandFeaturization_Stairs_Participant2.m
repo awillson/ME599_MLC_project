@@ -8,7 +8,7 @@ dt = 1/1200;
 time = 0:dt:3;
 n = int16(.150/dt); % row length of 150 ms sample
 cut = int16(.512/dt);
-activity = 'plantDors_';
+activity = 'stairs_';
 participant = 2;
 
 %data_out = zeros(n,16,16*9);
@@ -124,18 +124,37 @@ end
 count = 1;
 count_descend = 0;
 count_ascend = 0;
-for i = 0:16:4784
+for i = 0:16:464
     i
 %     keyboard
     if mod(count,2) == 0
         % even
         for sheet = 1:16
-            plantar(:,:,count_descend+sheet) = data_feat(:,:,i+sheet);
+            stair_descend(:,:,count_descend+sheet) = data_feat(:,:,i+sheet);
         end
         count_descend = count_descend+16;
     else
         for sheet = 1:16
-            dorsi(:,:,count_ascend+sheet) = data_feat(:,:,i+sheet);
+            stair_ascend(:,:,count_ascend+sheet) = data_feat(:,:,i+sheet);
+        end
+        count_ascend = count_ascend+16;
+    end
+    
+    count = count + 1;
+end
+
+for i = 480:16:4784
+    i
+%     keyboard
+    if mod(count,2) == 1
+        % odd
+        for sheet = 1:16
+            stair_descend(:,:,count_descend+sheet) = data_feat(:,:,i+sheet);
+        end
+        count_descend = count_descend+16;
+    else
+        for sheet = 1:16
+            stair_ascend(:,:,count_ascend+sheet) = data_feat(:,:,i+sheet);
         end
         count_ascend = count_ascend+16;
     end
@@ -144,15 +163,16 @@ for i = 0:16:4784
 end
 
 %%
+    
 if participant == 1
-    plantar_feat1 = plantar;
-    dorsi_feat1 = dorsi;
-    save('plantarFlex_featurized1.mat','plantar_feat1')
-    save('dorsiFlex_featurized1.mat','dorsi_feat1')
+    descent_feat1 = stair_descend;
+    ascent_feat1 = stair_ascend;
+    save('stairDescent_featurized1.mat','descent_feat1')
+    save('stairAscent_featurized1.mat','ascent_feat1')
 elseif participant == 2
-    plantar_feat2 = plantar;
-    dorsi_feat2 = dorsi;
-    save('plantarFlex_featurized2.mat','plantar_feat2')
-    save('dorsiFlex_featurized2.mat','dorsi_feat2')
+    descent_feat2 = stair_descend;
+    ascent_feat2 = stair_ascend;
+    save('stairDescent_featurized2.mat','descent_feat2')
+    save('stairAscent_featurized2.mat','ascent_feat2')
 end
 toc
