@@ -19,8 +19,9 @@ for k = 1:9
     trialname = strcat(activity,num);
     %trialname = strcat('BP_C_002_',activity,num);
 
-    data_in = dlmread(strcat('../BP_C_001/',trialname,'.csv'),',',6,15);
-    %data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,15);
+    data_in = dlmread(strcat('../BP_C_001/',trialname,'.csv'),',',6,14);
+    %data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,14);
+    data_in(:,9) = [];
 
     %remove vicon sensor delay
     data_cut = data_in(cut:end,:);
@@ -41,9 +42,10 @@ for k = 10:99
     num = strcat('0',num2str(k));
     trialname = strcat(activity,num);
     %trialname = strcat('BP_C_002_',activity,num);
-
-    data_in = dlmread(strcat('../BP_C_001/',trialname,'.csv'),',',6,15);
-    %data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,15);
+    
+    data_in = dlmread(strcat('../BP_C_001/',trialname,'.csv'),',',6,14);
+    %data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,14);
+    data_in(:,9) = [];
 
     %remove vicon sensor delay
     data_cut = data_in(cut:end,:);
@@ -63,8 +65,9 @@ for k = 100:300
     trialname = strcat(activity,num);
     %trialname = strcat('BP_C_002_',activity,num);
 
-    data_in = dlmread(strcat('../BP_C_001/',trialname,'.csv'),',',6,15);
-    %data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,15);
+    data_in = dlmread(strcat('../BP_C_001/',trialname,'.csv'),',',6,14);
+    %data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,14);
+    data_in(:,9) = [];
 
     %remove vicon sensor delay
     data_cut = data_in(cut:end,:);
@@ -127,7 +130,6 @@ count = 1;
 count_descend = 0;
 count_ascend = 0;
 for i = 0:16:4784
-    i
 %     keyboard
     if mod(count,2) == 0
         % even
