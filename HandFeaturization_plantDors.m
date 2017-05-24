@@ -6,7 +6,7 @@ tic
 %% Section 1: read in data, slice into 150 ms cube
 dt = 1/1200;
 time = 0:dt:3;
-n = int16(.150/dt); %row length of 150 ms sample
+n = int16(.150/dt); % row length of 150 ms sample
 cut = int16(.512/dt);
 activity = 'plantDors_';
 participant = 1;
@@ -121,31 +121,38 @@ for i = 1:trial
 end
 
 %% section 3: save data as .mat
-f = 1;
-g = 1;
-for i = 1:trial
-    
-    if mod(i,2) == 0
-    %number is even
-        plant(:,:,f) = data_feat(:,:,i);
-        f = f +1;
+count = 1;
+count_descend = 0;
+count_ascend = 0;
+for i = 0:16:4784
+    i
+%     keyboard
+    if mod(count,2) == 0
+        % even
+        for sheet = 1:16
+            plantar(:,:,count_descend+sheet) = data_feat(:,:,i+sheet);
+        end
+        count_descend = count_descend+16;
     else
-    %number is odd
-        dors(:,:,g) = data_feat(:,:,i);
-        g = g+1;
+        for sheet = 1:16
+            dorsi(:,:,count_ascend+sheet) = data_feat(:,:,i+sheet);
+        end
+        count_ascend = count_ascend+16;
     end
     
+    count = count + 1;
 end
 
+%%
 if participant == 1
-    plant_feat1 = plant;
-    dors_feat1 = dors;
-    save('plant_featurized1.mat','plant_feat1')
-    save('dors_featurized1.mat','dors_feat1')
+    plantar_feat1 = plantar;
+    dorsi_feat1 = dorsi;
+    save('plantarFlex_featurized1.mat','plantar_feat1')
+    save('dorsiFlex_featurized1.mat','dorsi_feat1')
 elseif participant == 2
-    plant_feat2 = plant;
-    dorse_feat2 = dors;
-    save('plant_featurized2.mat','plant_feat2')
-    save('dors_featurized2.mat','dors_feat2')
+    plantar_feat2 = plantar;
+    dorsi_feat2 = dorsi;
+    save('plantarFlex_featurized2.mat','plantar_feat2')
+    save('dorsiFlex_featurized2.mat','dorsi_feat2')
 end
 toc
