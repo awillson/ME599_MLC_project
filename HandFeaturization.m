@@ -7,17 +7,21 @@ dt = 1/1200;
 time = 0:dt:3;
 n = int16(.150/dt); %row length of 150 ms sample
 cut = int16(.512/dt);
-activity = 'fastWalk_';
-participant = 1;
+% activity = 'fastWalk_';
+% activity = 'slowWalk_';
+% activity = 'crouch_';
+% activity = 'sitting_';
+activity = 'standing_';
+participant = 2;
 
 %data_out = zeros(n,16,16*9);
 ind2 = 1;
 for k = 1:9
     num = strcat('00',num2str(k));
-    trialname = strcat(activity,num);
-    %trialname = strcat('BP_C_002_',activity,num);
+%     trialname = strcat(activity,num);
+    trialname = strcat('BP_C_002_',activity,num);
 
-    data_in = dlmread(strcat('../BP_C_001/',trialname,'.csv'),',',6,15);
+    data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,15);
     %data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,15);
 
     %remove vicon sensor delay
@@ -37,10 +41,10 @@ for k = 1:9
 end
 for k = 10:99
     num = strcat('0',num2str(k));
-    trialname = strcat(activity,num);
-    %trialname = strcat('BP_C_002_',activity,num);
+%     trialname = strcat(activity,num);
+    trialname = strcat('BP_C_002_',activity,num);
 
-    data_in = dlmread(strcat('../BP_C_001/',trialname,'.csv'),',',6,15);
+    data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,15);
     %data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,15);
 
     %remove vicon sensor delay
@@ -58,10 +62,10 @@ for k = 10:99
 end
 for k = 100:150
     num = num2str(k);
-    trialname = strcat(activity,num);
-    %trialname = strcat('BP_C_002_',activity,num);
+%     trialname = strcat(activity,num);
+    trialname = strcat('BP_C_002_',activity,num);
 
-    data_in = dlmread(strcat('../BP_C_001/',trialname,'.csv'),',',6,15);
+    data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,15);
     %data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,15);
 
     %remove vicon sensor delay
@@ -77,18 +81,6 @@ for k = 100:150
         iter = iter+1;
     end
 end
-
-% if strcmp(activity,'crouch_')  
-%       = data_out;
-% elseif strcmp(activity,'slowWalk_')  
-%     data_slowwalk = data_out;
-% elseif strcmp(activity,'sitting_')  
-%     data_sitting = data_out;
-% elseif strcmp(activity,'fastWalk_')  
-%     data_fastWalk = data_out;
-% elseif strcmp(activity,'standing_')  
-%     data_standing = data_out;
-% end
 
 [signal, sensor, trial] = size(data_out);
 % clearvars data_out
