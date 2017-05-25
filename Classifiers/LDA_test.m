@@ -45,43 +45,43 @@ for i = 1:1200
 %     trainingData2(i+4800,:) = reshape(standing_feat2(:,:,i), 1, 80);
     trainingLabels{i+4800} = 'standing';
 end
-trainingData = trainingData2;
+trainingData = trainingData1;
 trainingLabels = trainingLabels';
 % trainingLabels = vertcat(trainingLabels,trainingLabels);
 
 %% Reshape the testing data 
 
 for i = 1:1200
-    testingData1(i,:) = reshape(crouch_feat1(:,:,i+1200), 1, 80);
-%     testingData2(i,:) = reshape(crouch_feat2(:,:,i+1200), 1, 80);
+%     testingData1(i,:) = reshape(crouch_feat1(:,:,i+1200), 1, 80);
+    testingData2(i,:) = reshape(crouch_feat2(:,:,i+1200), 1, 80);
     testingLabels{i} = 'crouch';
 end
 
 for i = 1:1200
-    testingData1(i+1200,:) = reshape(fastWalk_feat1(:,:,i+1200), 1, 80);
-%     testingData2(i+1200,:) = reshape(fastWalk_feat2(:,:,i+1200), 1, 80);
+%     testingData1(i+1200,:) = reshape(fastWalk_feat1(:,:,i+1200), 1, 80);
+    testingData2(i+1200,:) = reshape(fastWalk_feat2(:,:,i+1200), 1, 80);
     testingLabels{i+1200} = 'fastWalk';
 end
 
 for i = 1:1200
-    testingData1(i+2400,:) = reshape(sitting_feat1(:,:,i+1200), 1, 80);
-%     testingData2(i+2400,:) = reshape(sitting_feat2(:,:,i+1200), 1, 80);
+%     testingData1(i+2400,:) = reshape(sitting_feat1(:,:,i+1200), 1, 80);
+    testingData2(i+2400,:) = reshape(sitting_feat2(:,:,i+1200), 1, 80);
     testingLabels{i+2400} = 'sitting';
 end
 
 for i = 1:1200
-    testingData1(i+3600,:) = reshape(slowWalk_feat1(:,:,i+1200), 1, 80);
-%     testingData2(i+3600,:) = reshape(slowWalk_feat2(:,:,i+1200), 1, 80);
+%     testingData1(i+3600,:) = reshape(slowWalk_feat1(:,:,i+1200), 1, 80);
+    testingData2(i+3600,:) = reshape(slowWalk_feat2(:,:,i+1200), 1, 80);
     testingLabels{i+3600} = 'slowWalk';
 end
 
 for i = 1:1200
-    testingData1(i+4800,:) = reshape(standing_feat1(:,:,i+1200), 1, 80);
-%     testingData2(i+4800,:) = reshape(standing_feat2(:,:,i+1200), 1, 80);
+%     testingData1(i+4800,:) = reshape(standing_feat1(:,:,i+1200), 1, 80);
+    testingData2(i+4800,:) = reshape(standing_feat2(:,:,i+1200), 1, 80);
     testingLabels{i+4800} = 'standing';
 end
 
-testingData = testingData1;
+testingData = testingData2;
 testingLabels = testingLabels';
 % testingLabels = vertcat(testingLabels,testingLabels);
 

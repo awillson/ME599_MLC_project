@@ -8,6 +8,10 @@ load fastWalk_featurized1.mat
 load slowWalk_featurized1.mat
 load sitting_featurized1.mat
 load standing_featurized1.mat
+load dorsiFlex_featurized1.mat
+load plantarFlex_featurized1.mat
+load stairAscent_featurized1.mat
+load stairDescent_featurized1.mat
 
 %% Reshape the training data into the same format as in the example code
 
@@ -34,6 +38,26 @@ end
 parfor i = 1:1200
     trainingData(i+4800,:) = reshape(standing_feat1(:,:,i), 1, 80);
     trainingLabels{i+4800} = 'standing';
+end
+
+parfor i = 1:1200
+    trainingData(i+6000,:) = reshape(dorsi_feat1(:,:,i), 1, 80);
+    trainingLabels{i+6000} = 'dorsiflexion';
+end
+
+parfor i = 1:1200
+    trainingData(i+7200,:) = reshape(plantar_feat1(:,:,i), 1, 80);
+    trainingLabels{i+7200} = 'plantarflexion';
+end
+
+parfor i = 1:1200
+    trainingData(i+8400,:) = reshape(ascent_feat1(:,:,i), 1, 80);
+    trainingLabels{i+8400} = 'stair ascent';
+end
+
+parfor i = 1:1200
+    trainingData(i+9600,:) = reshape(descent_feat1(:,:,i), 1, 80);
+    trainingLabels{i+9600} = 'stair descent';
 end
 
 trainingLabels = trainingLabels';
@@ -65,6 +89,26 @@ parfor i = 1:1200
     testingLabels{i+4800} = 'standing';
 end
 
+parfor i = 1:1200
+    testingData(i+6000,:) = reshape(dorsi_feat1(:,:,i+1200), 1, 80);
+    testingLabels{i+6000} = 'dorsiflexion';
+end
+
+parfor i = 1:1200
+    testingData(i+7200,:) = reshape(plantar_feat1(:,:,i+1200), 1, 80);
+    testingLabels{i+7200} = 'plantarflexion';
+end
+
+parfor i = 1:1200
+    testingData(i+8400,:) = reshape(ascent_feat1(:,:,i+1200), 1, 80);
+    testingLabels{i+8400} = 'stair ascent';
+end
+
+parfor i = 1:1200
+    testingData(i+9600,:) = reshape(descent_feat1(:,:,i+1200), 1, 80);
+    testingLabels{i+9600} = 'stair descent';
+end
+
 testingLabels = testingLabels';
 
 %% Now break things up by feature
@@ -76,8 +120,10 @@ sChangeData = testingData(:,4:5:end);
 wavlData = testingData(:,5:5:end);
 
 %% SVD all of the things
-
-[u1, s1, v1] = svd(meanData,'econ');
+allData = vertcat(trainingData, testingData);
+allLabels = vertcat(trainingLabels, testingLabels);
+[u, s, v] = svd(allData,'econ');
+[u1, s1, v1] = svd(meanData);
 [u2, s2, v2] = svd(zCrossData);
 [u3, s3, v3] = svd(varData);
 [u4, s4, v4] = svd(sChangeData);
@@ -125,23 +171,32 @@ axis([0 16 0 1])
 %%
 
 figure, hold on
-for i=1:size(meanData,1)
-x = v4(:,1)'*sChangeData(i,:)';
-y = v4(:,2)'*sChangeData(i,:)';
-z = v4(:,3)'*sChangeData(i,:)';
-    if strcmp(trainingLabels(i),'crouch')
-        plot3(x,y,z,'rx','LineWidth',2);
-    elseif strcmp(trainingLabels(i),'fastWalk')
+for i=1:3:size(allData,1)
+x = v(:,1)'*allData(i,:)';
+y = v(:,3)'*allData(i,:)';
+z = v(:,5)'*allData(i,:)';
+    if strcmp(allLabels(i),'crouch')
+        plot3(x,y,z,'ro','LineWidth',2);
+    elseif strcmp(allLabels(i),'fastWalk')
         plot3(x,y,z,'bo','LineWidth',2);
-    elseif strcmp(trainingLabels(i),'sitting')
+    elseif strcmp(allLabels(i),'sitting')
         plot3(x,y,z,'go','LineWidth',2);
-    elseif strcmp(trainingLabels(i),'standing')
+    elseif strcmp(allLabels(i),'standing')
         plot3(x,y,z,'yo','LineWidth',2);
-    elseif strcmp(trainingLabels(i),'slowWalk')
+    elseif strcmp(allLabels(i),'slowWalk')
+        plot3(x,y,z,'co','LineWidth',2);
+    elseif strcmp(allLabels(i),'dorsiflexion')
         plot3(x,y,z,'mo','LineWidth',2);
+    elseif strcmp(allLabels(i),'plantarflexion')
+        plot3(x,y,z,'ko','LineWidth',2);
+    elseif strcmp(allLabels(i),'stair ascent')
+        plot3(x,y,z,'o','Color',[0.75,0.5,0.25],'LineWidth',2);
+    elseif strcmp(allLabels(i),'stair descent')
+        plot3(x,y,z,'x','Color',[0.25,0.5,0.75],'LineWidth',2);
     end
 end
 view(85,25), grid on, set(gca,'FontSize',13)
+% legend('crouch', 'fastWalk','sitting','standing','slowWalk','dors','plant','stairup','stairdn')
 
 % % PCA example from Brunton's book
 % 

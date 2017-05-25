@@ -1,15 +1,15 @@
-% Featurization of RAW EMG data
+% Featurization of NORMALIZED! raw EMG data
 
-clear all; close all; clc;
+clear; close all; clc;
 tic
 %% Section 1: read in data, slice into 150 ms cube
 dt = 1/1200;
 time = 0:dt:3;
 n = int16(.150/dt); %row length of 150 ms sample
 cut = int16(.512/dt);
-activity = 'fastWalk_';
+% activity = 'fastWalk_';
 % activity = 'slowWalk_';
-% activity = 'courch_';
+% activity = 'crouch_';
 % activity = 'sitting_';
 % activity = 'standing_';
 participant = 2;
@@ -18,12 +18,13 @@ participant = 2;
 ind2 = 1;
 for k = 1:9
     num = strcat('00',num2str(k));
-%     trialname = strcat(activity,num);
+%      trialname = strcat(activity,num);
     trialname = strcat('BP_C_002_',activity,num);
 
-    data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,15);
-    %data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,15);
-
+    data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,14);
+%     data_in = dlmread(strcat('../BP_C_001/',trialname,'.csv'),',',6,14);
+    data_in(:,9) = [];
+    
     %remove vicon sensor delay
     data_cut = data_in(cut:end,:);
 
@@ -44,10 +45,11 @@ for k = 10:99
 %     trialname = strcat(activity,num);
     trialname = strcat('BP_C_002_',activity,num);
 
-    data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,15);
-    %data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,15);
-
-    %remove vicon sensor delay
+    data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,14);
+%     data_in = dlmread(strcat('../BP_C_001/',trialname,'.csv'),',',6,14);
+    data_in(:,9) = [];
+    
+%remove vicon sensor delay
     data_cut = data_in(cut:end,:);
 
     %chop into slices
@@ -65,8 +67,9 @@ for k = 100:150
 %     trialname = strcat(activity,num);
     trialname = strcat('BP_C_002_',activity,num);
 
-    data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,15);
-    %data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,15);
+    data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,14);
+%     data_in = dlmread(strcat('../BP_C_001/',trialname,'.csv'),',',6,14);
+    data_in(:,9) = [];
 
     %remove vicon sensor delay
     data_cut = data_in(cut:end,:);
@@ -81,18 +84,6 @@ for k = 100:150
         iter = iter+1;
     end
 end
-
-% if strcmp(activity,'crouch_')  
-%       = data_out;
-% elseif strcmp(activity,'slowWalk_')  
-%     data_slowwalk = data_out;
-% elseif strcmp(activity,'sitting_')  
-%     data_sitting = data_out;
-% elseif strcmp(activity,'fastWalk_')  
-%     data_fastWalk = data_out;
-% elseif strcmp(activity,'standing_')  
-%     data_standing = data_out;
-% end
 
 [signal, sensor, trial] = size(data_out);
 % clearvars data_out
@@ -135,41 +126,49 @@ for i = 1:trial
     end
 end
 
+%% Normalize
+
+for i = 1:5
+    for j = 1:16
+        data_feat(i,j,:) = normalize_data(data_feat(i,j,:),-1,1);
+    end
+end
+
 %% section 3: save data as .mat
 
 if participant == 1
     if strcmp(activity,'crouch_')
-        crouch_feat1 = data_feat;
-        save('crouch_featurized1.mat','crouch_feat1');
+        crouch_feat_norm1 = data_feat;
+        save('crouch_featurized_norm1.mat','crouch_feat_norm1');
     elseif strcmp(activity,'slowWalk_')  
-        slowWalk_feat1 = data_feat;
-        save('slowWalk_featurized1.mat','slowWalk_feat1');
+        slowWalk_feat_norm1 = data_feat;
+        save('slowWalk_featurized_norm1.mat','slowWalk_feat_norm1');
     elseif strcmp(activity,'sitting_')
-        sitting_feat1 = data_feat;
-        save('sitting_featurized1.mat','sitting_feat1');
+        sitting_feat_norm1 = data_feat;
+        save('sitting_featurized_norm1.mat','sitting_feat_norm1');
     elseif strcmp(activity,'fastWalk_')
-        fastWalk_feat1 = data_feat;
-        save('fastWalk_featurized1.mat','fastWalk_feat1');
+        fastWalk_feat_norm1 = data_feat;
+        save('fastWalk_featurized_norm1.mat','fastWalk_feat_norm1');
     elseif strcmp(activity,'standing_')
-        standing_feat1 = data_feat;
-        save('standing_featurized1.mat','standing_feat1');
+        standing_feat_norm1 = data_feat;
+        save('standing_featurized_norm1.mat','standing_feat_norm1');
     end
 elseif participant == 2
     if strcmp(activity,'crouch_')
-        crouch_feat2 = data_feat;
-        save('crouch_featurized2.mat','crouch_feat2');
+        crouch_feat_norm2 = data_feat;
+        save('crouch_featurized_norm2.mat','crouch_feat_norm2');
     elseif strcmp(activity,'slowWalk_')  
-        slowWalk_feat2 = data_feat;
-        save('slowWalk_featurized2.mat','slowWalk_feat2');
+        slowWalk_feat_norm2 = data_feat;
+        save('slowWalk_featurized_norm2.mat','slowWalk_feat_norm2');
     elseif strcmp(activity,'sitting_')
-        sitting_feat2 = data_feat;
-        save('sitting_featurized2.mat','sitting_feat2');
+        sitting_feat_norm2 = data_feat;
+        save('sitting_featurized_norm2.mat','sitting_feat_norm2');
     elseif strcmp(activity,'fastWalk_')
-        fastWalk_feat2 = data_feat;
-        save('fastWalk_featurized2.mat','fastWalk_feat2');
+        fastWalk_feat_norm2 = data_feat;
+        save('fastWalk_featurized_norm2.mat','fastWalk_feat_norm2');
     elseif strcmp(activity,'standing_')
-        standing_feat2 = data_feat;
-        save('standing_featurized2.mat','standing_feat2');
+        standing_feat_norm2 = data_feat;
+        save('standing_featurized_norm2.mat','standing_feat_norm2');
     end
 end
     
