@@ -11,14 +11,14 @@ cut = int16(.512/dt);
 % activity = 'slowWalk_';
 % activity = 'crouch_';
 % activity = 'sitting_';
-% activity = 'standing_';
+activity = 'standing_';
 participant = 2;
 
 %data_out = zeros(n,16,16*9);
 ind2 = 1;
 for k = 1:9
     num = strcat('00',num2str(k));
-%      trialname = strcat(activity,num);
+%     trialname = strcat(activity,num);
     trialname = strcat('BP_C_002_',activity,num);
 
     data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,14);

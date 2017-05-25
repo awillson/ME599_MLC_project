@@ -9,18 +9,18 @@ time = 0:dt:3;
 n = int16(.150/dt); % row length of 150 ms sample
 cut = int16(.512/dt);
 activity = 'plantDors_';
-participant = 1;
+participant = 2;
 
 %data_out = zeros(n,16,16*9);
 ind2 = 1;
 for k = 1:9
     
     num = strcat('00',num2str(k));
-     trialname = strcat(activity,num);
-    %trialname = strcat('BP_C_002_',activity,num);
+%      trialname = strcat(activity,num);
+    trialname = strcat('BP_C_002_',activity,num);
 
-     data_in = dlmread(strcat('../BP_C_001/',trialname,'.csv'),',',6,14);
-    %data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,14);
+%      data_in = dlmread(strcat('../BP_C_001/',trialname,'.csv'),',',6,14);
+    data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,14);
     data_in(:,9) = [];
 
     %remove vicon sensor delay
@@ -40,11 +40,11 @@ end
 
 for k = 10:99
     num = strcat('0',num2str(k));
-     trialname = strcat(activity,num);
-    %trialname = strcat('BP_C_002_',activity,num);
+%      trialname = strcat(activity,num);
+    trialname = strcat('BP_C_002_',activity,num);
 
-     data_in = dlmread(strcat('../BP_C_001/',trialname,'.csv'),',',6,14);
-    %data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,14);
+%      data_in = dlmread(strcat('../BP_C_001/',trialname,'.csv'),',',6,14);
+    data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,14);
     data_in(:,9) = [];
 
     %remove vicon sensor delay
@@ -62,11 +62,11 @@ for k = 10:99
 end
 for k = 100:300
     num = num2str(k);
-     trialname = strcat(activity,num);
-    %trialname = strcat('BP_C_002_',activity,num);
+%      trialname = strcat(activity,num);
+    trialname = strcat('BP_C_002_',activity,num);
 
-    data_in = dlmread(strcat('../BP_C_001/',trialname,'.csv'),',',6,14);
-    %data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,14);
+%     data_in = dlmread(strcat('../BP_C_001/',trialname,'.csv'),',',6,14);
+    data_in = dlmread(strcat('../BP_C_002/',trialname,'.csv'),',',6,14);
     data_in(:,9) = [];
 
     %remove vicon sensor delay
