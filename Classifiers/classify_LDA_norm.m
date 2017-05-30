@@ -322,13 +322,13 @@ featTest(:,35) = LDAclassifier.Coeffs(7, 9).Linear;
 featTest(:,36) = LDAclassifier.Coeffs(8, 9).Linear;
 featTest = abs(featTest);
 
-featSum = sum(featTest,2);
+featSum = mean(featTest,2);
 figure;
 bar(featSum)
 
 featSumCopy = featSum;
 for i = 1:16
-    sensor(i) = sum(featSumCopy(1:5));
+    sensor(i) = mean(featSumCopy(1:5));
     featSumCopy(1:5) = [];
 end
 
