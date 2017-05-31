@@ -34,12 +34,12 @@ load stairDescent_featurized_norm2.mat
 % measurement/feature.
 
 % Use this switch to determine which data is used for training.
-training = 'P1';
-% training = 'P2';
+% training = 'P1';
+ training = 'P2';
 % training = 'P1&P2';
 
 % Use this switch to determine which data is used for testing.
-testing = 'P1';
+ testing = 'P1';
 % testing = 'P2';
 % testing = 'P1&P2';
 
