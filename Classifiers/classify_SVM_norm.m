@@ -35,8 +35,8 @@ load stairDescent_featurized_norm2.mat
 % training = 'P1&P2';
 
 % Use this switch to determine which data is used for testing.
- testing = 'P1';
-% testing = 'P2';
+% testing = 'P1';
+ testing = 'P2';
 % testing = 'P1&P2';
 
 parfor i = 1:1200
@@ -223,5 +223,5 @@ accuracyStanding = length(e)/1200;
 
 %%
 meanAccuracy = mean([accuracyCrouch; accuracyFast; accuracySitting;...
-                        accuracySlow; accuracyStanding]);
+                        accuracySlow; accuracyStanding])
 
