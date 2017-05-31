@@ -33,14 +33,14 @@ load stairDescent_featurized_norm2.mat
 % measurement/feature.
 
 % Use this switch to determine which data is used for training.
-training = 'P1';
+% training = 'P1';
 % training = 'P2';
-% training = 'P1&P2';
+training = 'P1&P2';
 
 % Use this switch to determine which data is used for testing.
-testing = 'P1';
+% testing = 'P1';
 % testing = 'P2';
-% testing = 'P1&P2';
+testing = 'P1&P2';
 
 parfor i = 1:1200
     trainingData1(i,:) = reshape(crouch_feat_norm1(:,:,i), 1, 80);
@@ -185,8 +185,9 @@ sensorLabels = {'sensor1','sensor2','sensor3','sensor4','sensor5',...
                             'sensor15','sensor16'}';
 
 %% First round
-for i = 0:15
-    i
+disp('1')
+parfor i = 0:15
+    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
     
@@ -198,7 +199,7 @@ for i = 0:15
     
     LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
     
-    accuracy1(i+1) = evaluateClassifier(LDAclassifier,testingDataCut)
+    accuracy1(i+1) = evaluateClassifier(LDAclassifier,testingDataCut);
 end
 
 [a1,b1] = max(accuracy1);
@@ -259,8 +260,9 @@ end
 clear cutStart cutEnd
 
 %% Second round
-for i = 0:14
-    i
+disp('2')
+parfor i = 0:14
+    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
     
@@ -272,7 +274,7 @@ for i = 0:14
     
     LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
     
-    accuracy2(i+1) = evaluateClassifier(LDAclassifier,testingDataCut)
+    accuracy2(i+1) = evaluateClassifier(LDAclassifier,testingDataCut);
 end
 
 [a2,b2] = max(accuracy2);
@@ -330,8 +332,10 @@ end
 clear cutStart cutEnd
 
 %% third round
-for i = 0:13
-    i
+disp('3')
+
+parfor i = 0:13
+    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
     
@@ -343,7 +347,7 @@ for i = 0:13
     
     LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
     
-    accuracy3(i+1) = evaluateClassifier(LDAclassifier,testingDataCut)
+    accuracy3(i+1) = evaluateClassifier(LDAclassifier,testingDataCut);
 end
 
 [a3,b3] = max(accuracy3);
@@ -398,8 +402,10 @@ end
 clear cutStart cutEnd
 
 %% fourth round
-for i = 0:12
-    i
+disp('4')
+
+parfor i = 0:12
+    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
     
@@ -411,7 +417,7 @@ for i = 0:12
     
     LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
     
-    accuracy4(i+1) = evaluateClassifier(LDAclassifier,testingDataCut)
+    accuracy4(i+1) = evaluateClassifier(LDAclassifier,testingDataCut);
 end
 
 [a4,b4] = max(accuracy4);
@@ -463,8 +469,10 @@ end
 clear cutStart cutEnd
 
 %% fifth round
-for i = 0:11
-    i
+disp('5')
+
+parfor i = 0:11
+    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
     
@@ -476,7 +484,7 @@ for i = 0:11
     
     LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
     
-    accuracy5(i+1) = evaluateClassifier(LDAclassifier,testingDataCut)
+    accuracy5(i+1) = evaluateClassifier(LDAclassifier,testingDataCut);
 end
 
 [a5,b5] = max(accuracy5);
@@ -525,8 +533,10 @@ end
 clear cutStart cutEnd
 
 %% sixth round
-for i = 0:10
-    i
+disp('6')
+
+parfor i = 0:10
+    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
     
@@ -538,7 +548,7 @@ for i = 0:10
     
     LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
     
-    accuracy6(i+1) = evaluateClassifier(LDAclassifier,testingDataCut)
+    accuracy6(i+1) = evaluateClassifier(LDAclassifier,testingDataCut);
 end
 
 [a6,b6] = max(accuracy6);
@@ -584,8 +594,10 @@ end
 clear cutStart cutEnd
 
 %% seventh round
-for i = 0:9
-    i
+disp('7')
+
+parfor i = 0:9
+    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
     
@@ -597,7 +609,7 @@ for i = 0:9
     
     LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
     
-    accuracy7(i+1) = evaluateClassifier(LDAclassifier,testingDataCut)
+    accuracy7(i+1) = evaluateClassifier(LDAclassifier,testingDataCut);
 end
 
 [a7,b7] = max(accuracy7);
@@ -640,8 +652,10 @@ end
 clear cutStart cutEnd
 
 %% eigth round
-for i = 0:8
-    i
+disp('8')
+
+parfor i = 0:8
+    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
     
@@ -653,7 +667,7 @@ for i = 0:8
     
     LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
     
-    accuracy8(i+1) = evaluateClassifier(LDAclassifier,testingDataCut)
+    accuracy8(i+1) = evaluateClassifier(LDAclassifier,testingDataCut);
 end
 
 [a8,b8] = max(accuracy8);
@@ -693,8 +707,10 @@ end
 clear cutStart cutEnd
 
 %% ninth round
-for i = 0:7
-    i
+disp('9')
+
+parfor i = 0:7
+    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
     
@@ -743,8 +759,10 @@ end
 clear cutStart cutEnd
 
 %% tenth round
-for i = 0:6
-    i
+disp('10')
+
+parfor i = 0:6
+    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
     
@@ -756,7 +774,7 @@ for i = 0:6
     
     LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
     
-    accuracy10(i+1) = evaluateClassifier(LDAclassifier,testingDataCut)
+    accuracy10(i+1) = evaluateClassifier(LDAclassifier,testingDataCut);
 end
 
 [a10,b10] = max(accuracy10);
@@ -790,8 +808,10 @@ end
 clear cutStart cutEnd
 
 %% eleventh round
-for i = 0:5
-    i
+disp('11')
+
+parfor i = 0:5
+    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
     
@@ -803,7 +823,7 @@ for i = 0:5
     
     LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
     
-    accuracy11(i+1) = evaluateClassifier(LDAclassifier,testingDataCut)
+    accuracy11(i+1) = evaluateClassifier(LDAclassifier,testingDataCut);
 end
 
 [a11,b11] = max(accuracy11);
@@ -834,8 +854,10 @@ end
 clear cutStart cutEnd
 
 %% twelfth round
-for i = 0:4
-    i
+disp('12')
+
+parfor i = 0:4
+    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
     
@@ -847,7 +869,7 @@ for i = 0:4
     
     LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
     
-    accuracy12(i+1) = evaluateClassifier(LDAclassifier,testingDataCut)
+    accuracy12(i+1) = evaluateClassifier(LDAclassifier,testingDataCut);
 end
 
 [a12,b12] = max(accuracy12);
@@ -875,8 +897,9 @@ end
 clear cutStart cutEnd
 
 %% thirteenth round
-for i = 0:3
-    i
+disp('13')
+parfor i = 0:3
+    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
     
@@ -888,7 +911,7 @@ for i = 0:3
     
     LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
     
-    accuracy13(i+1) = evaluateClassifier(LDAclassifier,testingDataCut)
+    accuracy13(i+1) = evaluateClassifier(LDAclassifier,testingDataCut);
 end
 
 [a13,b13] = max(accuracy13);
@@ -913,8 +936,9 @@ end
 clear cutStart cutEnd
 
 %% fourteenth round
-for i = 0:2
-    i
+disp('14')
+parfor i = 0:2
+    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
     
@@ -926,7 +950,7 @@ for i = 0:2
     
     LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
     
-    accuracy14(i+1) = evaluateClassifier(LDAclassifier,testingDataCut)
+    accuracy14(i+1) = evaluateClassifier(LDAclassifier,testingDataCut);
 end
 
 [a14,b14] = max(accuracy14);
@@ -948,8 +972,9 @@ end
 clear cutStart cutEnd
 
 %% fifteenth round
-for i = 0:1
-    i
+disp('15')
+parfor i = 0:1
+    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
     
@@ -961,7 +986,7 @@ for i = 0:1
     
     LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
     
-    accuracy15(i+1) = evaluateClassifier(LDAclassifier,testingDataCut)
+    accuracy15(i+1) = evaluateClassifier(LDAclassifier,testingDataCut);
 end
 
 [a15,b15] = max(accuracy15);
@@ -984,7 +1009,7 @@ theCell = {accuracy1; accuracy2; accuracy3; accuracy4; accuracy5;...
                     accuracy11; accuracy12; accuracy13; accuracy14;...
                         accuracy15};
 
-for i = 1:15
+parfor i = 1:15
     i
     maxAcc(i) = max(cell2mat(theCell(i)));
 end
