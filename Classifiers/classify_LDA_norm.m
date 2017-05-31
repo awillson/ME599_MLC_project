@@ -227,8 +227,41 @@ ourStandingPrediction = ourStandingPrediction';
 e = find(strcmp(ourStandingPrediction,'standing'));
 accuracyStanding = length(e)/1200;
 
+% Test stair ascent
+parfor i = 1:1200
+    ourAscentPrediction(i) = predict(LDAclassifier, testingData(i+6000,:));
+end
+ourAscentPrediction = ourAscentPrediction';
+f = find(strcmp(ourAscentPrediction,'stair ascent'));
+accuracyAscent = length(f)/1200;
+
+% Test stair descent
+parfor i = 1:1200
+    ourDescentPrediction(i) = predict(LDAclassifier, testingData(i+7200,:));
+end
+ourDescentPrediction = ourDescentPrediction';
+g = find(strcmp(ourDescentPrediction,'stair descent'));
+accuracyDescent = length(g)/1200;
+
+% Test dorsiflexion
+parfor i = 1:1200
+    ourDorsiPrediction(i) = predict(LDAclassifier, testingData(i+8400,:));
+end
+ourDorsiPrediction = ourDorsiPrediction';
+h = find(strcmp(ourDorsiPrediction,'dorsi'));
+accuracyDorsi = length(h)/1200;
+
+% Test plantarflexion
+parfor i = 1:1200
+    ourPlantarPrediction(i) = predict(LDAclassifier, testingData(i+9600,:));
+end
+ourPlantarPrediction = ourPlantarPrediction';
+j = find(strcmp(ourPlantarPrediction,'plantar'));
+accuracyPlantar = length(j)/1200;
+
 meanAccuracy = mean([accuracyCrouch; accuracyFast; accuracySitting;...
-                        accuracySlow; accuracyStanding])
+                        accuracySlow; accuracyStanding; accuracyAscent;...
+                            accuracyDescent; accuracyDorsi; accuracyPlantar]);
 toc
 %% Visualize using LDA bases
 
