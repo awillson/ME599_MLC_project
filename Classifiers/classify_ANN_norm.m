@@ -35,8 +35,8 @@ load stairDescent_featurized_norm2.mat
 % training = 'P1&P2';
 
 % Use this switch to determine which data is used for testing.
-% testing = 'P1';
- testing = 'P2';
+ testing = 'P1';
+% testing = 'P2';
 % testing = 'P1&P2';
 
 parfor i = 1:1200
