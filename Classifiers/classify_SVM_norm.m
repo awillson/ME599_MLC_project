@@ -1,11 +1,8 @@
-%%  Perform Random Forest analysis on our normalized Data Set
-%   This script trains a random forest classifer to our data
-%   and tests its accuracy.
+%% Try Out SVM on our Data Set
 
 clear; close all; clc;
-tic
-%% Import data cubes
 
+%% Import
 load crouch_featurized_norm1.mat
 load fastWalk_featurized_norm1.mat
 load slowWalk_featurized_norm1.mat
@@ -26,7 +23,7 @@ load plantarFlex_featurized_norm2.mat
 load stairAscent_featurized_norm2.mat
 load stairDescent_featurized_norm2.mat
 
-%% Reshape the training data into format needed for training.
+%% Reshape the testing data 
 
 % To train the classifier, a matrix must be built where each row
 % corresponds to a labeled example, and each column is a
@@ -108,7 +105,6 @@ elseif strcmp(training, 'P1&P2')
     trainingData = vertcat(trainingData1,trainingData2);
     trainingLabels = vertcat(trainingLabels', trainingLabels');
 end
-
 %% Reshape the testing data 
 
 parfor i = 1:1200
@@ -177,53 +173,55 @@ elseif strcmp(testing, 'P1&P2')
     testingLabels = vertcat(testingLabels', testingLabels');
 end
 
+
 %% Create the classifier
 
 % Can't believe it's this easy.
-Forestclassifier = TreeBagger(15,trainingData,trainingLabels);
+SVMclassifier = fitcecoc(trainingData,trainingLabels);
 
 %% Evaluate the classifier on the test data
 
 % Test crouching
-parfor i = 1:1200
-   ourCrouchPrediction(i) = predict(Forestclassifier, testingData(i,:));
+for i = 1:1200
+   ourCrouchPrediction(i) = predict(SVMclassifier, testingData(i,:));
 end
 ourCrouchPrediction = ourCrouchPrediction';
 a = find(strcmp(ourCrouchPrediction,'crouch'));
 accuracyCrouch = length(a)/1200;
 
 % Test fastWalk
-parfor i = 1:1200
-    ourFastPrediction(i) = predict(Forestclassifier, testingData(i+1200,:));
+for i = 1:1200
+    ourFastPrediction(i) = predict(SVMclassifier, testingData(i+1200,:));
 end
 ourFastPrediction = ourFastPrediction';
 b = find(strcmp(ourFastPrediction,'fastWalk'));
 accuracyFast = length(b)/1200;
 
 % Test sitting
-parfor i = 1:1200
-    ourSittingPrediction(i) = predict(Forestclassifier, testingData(i+2400,:));
+for i = 1:1200
+    ourSittingPrediction(i) = predict(SVMclassifier, testingData(i+2400,:));
 end
 ourSittingPrediction = ourSittingPrediction';
 c = find(strcmp(ourSittingPrediction,'sitting'));
 accuracySitting = length(c)/1200; 
 
 % Test slow walking
-parfor i = 1:1200
-    ourSlowPrediction(i) = predict(Forestclassifier, testingData(i+3600,:));
+for i = 1:1200
+    ourSlowPrediction(i) = predict(SVMclassifier, testingData(i+3600,:));
 end
 ourSlowPrediction = ourSlowPrediction';
 d = find(strcmp(ourSlowPrediction,'slowWalk'));
 accuracySlow = length(d)/1200;
 
 % Test standing
-parfor i = 1:1200
-    ourStandingPrediction(i) = predict(Forestclassifier, testingData(i+4800,:));
+for i = 1:1200
+    ourStandingPrediction(i) = predict(SVMclassifier, testingData(i+4800,:));
 end
 ourStandingPrediction = ourStandingPrediction';
 e = find(strcmp(ourStandingPrediction,'standing'));
 accuracyStanding = length(e)/1200;
 
+%%
 meanAccuracy = mean([accuracyCrouch; accuracyFast; accuracySitting;...
                         accuracySlow; accuracyStanding])
-toc
+

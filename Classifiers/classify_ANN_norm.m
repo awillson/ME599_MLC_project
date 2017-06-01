@@ -1,11 +1,8 @@
-%%  Perform Random Forest analysis on our normalized Data Set
-%   This script trains a random forest classifer to our data
-%   and tests its accuracy.
+%% Try Out ANN on our Data Set!
 
 clear; close all; clc;
-tic
-%% Import data cubes
 
+%% Import
 load crouch_featurized_norm1.mat
 load fastWalk_featurized_norm1.mat
 load slowWalk_featurized_norm1.mat
@@ -26,7 +23,7 @@ load plantarFlex_featurized_norm2.mat
 load stairAscent_featurized_norm2.mat
 load stairDescent_featurized_norm2.mat
 
-%% Reshape the training data into format needed for training.
+%% Reshape the testing data 
 
 % To train the classifier, a matrix must be built where each row
 % corresponds to a labeled example, and each column is a
@@ -108,7 +105,6 @@ elseif strcmp(training, 'P1&P2')
     trainingData = vertcat(trainingData1,trainingData2);
     trainingLabels = vertcat(trainingLabels', trainingLabels');
 end
-
 %% Reshape the testing data 
 
 parfor i = 1:1200
@@ -177,53 +173,50 @@ elseif strcmp(testing, 'P1&P2')
     testingLabels = vertcat(testingLabels', testingLabels');
 end
 
-%% Create the classifier
 
-% Can't believe it's this easy.
-Forestclassifier = TreeBagger(15,trainingData,trainingLabels);
+%% Construct targets
 
-%% Evaluate the classifier on the test data
-
-% Test crouching
-parfor i = 1:1200
-   ourCrouchPrediction(i) = predict(Forestclassifier, testingData(i,:));
+for i = 1:length(trainingData)
+    if strcmp(trainingLabels(i), 'crouch')
+        trainingTargets(i,:) = [1 0 0 0 0 0 0 0 0];
+    elseif strcmp(trainingLabels(i), 'fastWalk')
+        trainingTargets(i,:) = [0 1 0 0 0 0 0 0 0];
+    elseif strcmp(trainingLabels(i), 'sitting')
+        trainingTargets(i,:) = [0 0 1 0 0 0 0 0 0];
+    elseif strcmp(trainingLabels(i), 'slowWalk')
+        trainingTargets(i,:) = [0 0 0 1 0 0 0 0 0];
+    elseif strcmp(trainingLabels(i), 'standing')
+        trainingTargets(i,:) = [0 0 0 0 1 0 0 0 0];
+    elseif strcmp(trainingLabels(i), 'stair ascent')
+        trainingTargets(i,:) = [0 0 0 0 0 1 0 0 0];
+    elseif strcmp(trainingLabels(i), 'stair descent')
+        trainingTargets(i,:) = [0 0 0 0 0 0 1 0 0];
+    elseif strcmp(trainingLabels(i), 'dorsi')
+        trainingTargets(i,:) = [0 0 0 0 0 0 0 1 0];
+    else %plantarflexion
+        trainingTargets(i,:) = [0 0 0 0 0 0 0 0 1];
+    end
 end
-ourCrouchPrediction = ourCrouchPrediction';
-a = find(strcmp(ourCrouchPrediction,'crouch'));
-accuracyCrouch = length(a)/1200;
 
-% Test fastWalk
-parfor i = 1:1200
-    ourFastPrediction(i) = predict(Forestclassifier, testingData(i+1200,:));
+for i = 1:length(testingData)
+    if strcmp(testingLabels(i), 'crouch')
+        testingTargets(i,:) = [1 0 0 0 0 0 0 0 0];
+    elseif strcmp(testingLabels(i), 'fastWalk')
+        testingTargets(i,:) = [0 1 0 0 0 0 0 0 0];
+    elseif strcmp(testingLabels(i), 'sitting')
+        testingTargets(i,:) = [0 0 1 0 0 0 0 0 0];
+    elseif strcmp(testingLabels(i), 'slowWalk')
+        testingTargets(i,:) = [0 0 0 1 0 0 0 0 0];
+    elseif strcmp(testingLabels(i), 'standing')
+        testingTargets(i,:) = [0 0 0 0 1 0 0 0 0];
+    elseif strcmp(testingLabels(i), 'stair ascent')
+        testingTargets(i,:) = [0 0 0 0 0 1 0 0 0];
+    elseif strcmp(testingLabels(i), 'stair descent')
+        testingTargets(i,:) = [0 0 0 0 0 0 1 0 0];
+    elseif strcmp(testingLabels(i), 'dorsi')
+        testingTargets(i,:) = [0 0 0 0 0 0 0 1 0];
+    else %plantarflexion
+        testingTargets(i,:) = [0 0 0 0 0 0 0 0 1];
+    end
 end
-ourFastPrediction = ourFastPrediction';
-b = find(strcmp(ourFastPrediction,'fastWalk'));
-accuracyFast = length(b)/1200;
-
-% Test sitting
-parfor i = 1:1200
-    ourSittingPrediction(i) = predict(Forestclassifier, testingData(i+2400,:));
-end
-ourSittingPrediction = ourSittingPrediction';
-c = find(strcmp(ourSittingPrediction,'sitting'));
-accuracySitting = length(c)/1200; 
-
-% Test slow walking
-parfor i = 1:1200
-    ourSlowPrediction(i) = predict(Forestclassifier, testingData(i+3600,:));
-end
-ourSlowPrediction = ourSlowPrediction';
-d = find(strcmp(ourSlowPrediction,'slowWalk'));
-accuracySlow = length(d)/1200;
-
-% Test standing
-parfor i = 1:1200
-    ourStandingPrediction(i) = predict(Forestclassifier, testingData(i+4800,:));
-end
-ourStandingPrediction = ourStandingPrediction';
-e = find(strcmp(ourStandingPrediction,'standing'));
-accuracyStanding = length(e)/1200;
-
-meanAccuracy = mean([accuracyCrouch; accuracyFast; accuracySitting;...
-                        accuracySlow; accuracyStanding])
-toc
+    
