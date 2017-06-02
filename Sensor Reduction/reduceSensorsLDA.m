@@ -811,7 +811,6 @@ clear cutStart cutEnd
 disp('11')
 
 parfor i = 0:5
-    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
     
@@ -1013,3 +1012,16 @@ parfor i = 1:15
     i
     maxAcc(i) = max(cell2mat(theCell(i)));
 end
+
+
+%%
+
+sensorsOrderedLDA = {'sensor7','sensor2','sensor15','sensor1',...
+                        'sensor11','sensor14','sensor4','sensor12',...
+                            'sensor3','sensor13','sensor10','sensor9',...
+                                'sensor8','sensor6','sensor5','sensor16'};
+                            
+sensorAccuracyPlotLDA = fliplr(maxAcc);
+
+save('sensorReductionResults.mat','sensorsOrderedLDA','sensorAccuracyPlotLDA')
+
