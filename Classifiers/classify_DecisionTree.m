@@ -2,70 +2,181 @@
 
 clear; close all; clc;
 
-%% Import
-load crouch_featurized1.mat
-load fastWalk_featurized1.mat
-load slowWalk_featurized1.mat
-load sitting_featurized1.mat
-load standing_featurized1.mat
+%% Import data cubes
 
-%% Reshape the training data into the same format as in the example code
+load crouch_featurized_norm1.mat
+load fastWalk_featurized_norm1.mat
+load slowWalk_featurized_norm1.mat
+load sitting_featurized_norm1.mat
+load standing_featurized_norm1.mat
+load dorsiFlex_featurized_norm1.mat
+load plantarFlex_featurized_norm1.mat
+load stairAscent_featurized_norm1.mat
+load stairDescent_featurized_norm1.mat
 
-for i = 1:1200
-    trainingData(i,:) = reshape(crouch_feat1(:,:,i), 1, 80);
+load crouch_featurized_norm2.mat
+load fastWalk_featurized_norm2.mat
+load slowWalk_featurized_norm2.mat
+load sitting_featurized_norm2.mat
+load standing_featurized_norm2.mat
+load dorsiFlex_featurized_norm2.mat
+load plantarFlex_featurized_norm2.mat
+load stairAscent_featurized_norm2.mat
+load stairDescent_featurized_norm2.mat
+
+%% Reshape the training data into format needed for training.
+
+% To train the classifier, a matrix must be built where each row
+% corresponds to a labeled example, and each column is a
+% measurement/feature.
+
+% Use this switch to determine which data is used for training.
+% training = 'P1';
+ training = 'P2';
+% training = 'P1&P2';
+
+% Use this switch to determine which data is used for testing.
+ testing = 'P1';
+% testing = 'P2';
+% testing = 'P1&P2';
+
+parfor i = 1:1200
+    trainingData1(i,:) = reshape(crouch_feat_norm1(:,:,i), 1, 80);
+    trainingData2(i,:) = reshape(crouch_feat_norm2(:,:,i), 1, 80);
     trainingLabels{i} = 'crouch';
 end
 
-for i = 1:1200
-    trainingData(i+1200,:) = reshape(fastWalk_feat1(:,:,i), 1, 80);
+
+parfor i = 1:1200
+    trainingData1(i+1200,:) = reshape(fastWalk_feat_norm1(:,:,i), 1, 80);
+    trainingData2(i+1200,:) = reshape(fastWalk_feat_norm2(:,:,i), 1, 80);
     trainingLabels{i+1200} = 'fastWalk';
 end
 
-for i = 1:1200
-    trainingData(i+2400,:) = reshape(sitting_feat1(:,:,i), 1, 80);
+parfor i = 1:1200
+    trainingData1(i+2400,:) = reshape(sitting_feat_norm1(:,:,i), 1, 80);
+    trainingData2(i+2400,:) = reshape(sitting_feat_norm2(:,:,i), 1, 80);
     trainingLabels{i+2400} = 'sitting';
 end
 
-for i = 1:1200
-    trainingData(i+3600,:) = reshape(slowWalk_feat1(:,:,i), 1, 80);
+parfor i = 1:1200
+    trainingData1(i+3600,:) = reshape(slowWalk_feat_norm1(:,:,i), 1, 80);
+    trainingData2(i+3600,:) = reshape(slowWalk_feat_norm2(:,:,i), 1, 80);
     trainingLabels{i+3600} = 'slowWalk';
 end
 
-for i = 1:1200
-    trainingData(i+4800,:) = reshape(standing_feat1(:,:,i), 1, 80);
+parfor i = 1:1200
+    trainingData1(i+4800,:) = reshape(standing_feat_norm1(:,:,i), 1, 80);
+    trainingData2(i+4800,:) = reshape(standing_feat_norm2(:,:,i), 1, 80);
     trainingLabels{i+4800} = 'standing';
 end
 
-trainingLabels = trainingLabels';
+parfor i = 1:1200
+    trainingData1(i+6000,:) = reshape(ascent_feat_norm1(:,:,i), 1, 80);
+    trainingData2(i+6000,:) = reshape(ascent_feat_norm2(:,:,i), 1, 80);
+    trainingLabels{i+6000} = 'stair ascent';
+end
+
+parfor i = 1:1200
+    trainingData1(i+7200,:) = reshape(descent_feat_norm1(:,:,i), 1, 80);
+    trainingData2(i+7200,:) = reshape(descent_feat_norm2(:,:,i), 1, 80);
+    trainingLabels{i+7200} = 'stair descent';
+end
+
+parfor i = 1:1200
+    trainingData1(i+8400,:) = reshape(dorsi_feat_norm1(:,:,i), 1, 80);
+    trainingData2(i+8400,:) = reshape(dorsi_feat_norm2(:,:,i), 1, 80);
+    trainingLabels{i+8400} = 'dorsi';
+end
+
+parfor i = 1:1200
+    trainingData1(i+9600,:) = reshape(plantar_feat_norm1(:,:,i), 1, 80);
+    trainingData2(i+9600,:) = reshape(plantar_feat_norm2(:,:,i), 1, 80);
+    trainingLabels{i+9600} = 'plantar';
+end
+
+% Put together training matrix based up which data was selected above.
+if strcmp(training, 'P1')
+    trainingData = trainingData1;
+    trainingLabels = trainingLabels';
+elseif strcmp(training, 'P2')
+    trainingData = trainingData2;
+    trainingLabels = trainingLabels';
+elseif strcmp(training, 'P1&P2')
+    trainingData = vertcat(trainingData1,trainingData2);
+    trainingLabels = vertcat(trainingLabels', trainingLabels');
+end
 
 %% Reshape the testing data 
 
-for i = 1:1200
-    testingData(i,:) = reshape(crouch_feat1(:,:,i+1200), 1, 80);
+parfor i = 1:1200
+    testingData1(i,:) = reshape(crouch_feat_norm1(:,:,i+1200), 1, 80);
+    testingData2(i,:) = reshape(crouch_feat_norm2(:,:,i+1200), 1, 80);
     testingLabels{i} = 'crouch';
 end
 
-for i = 1:1200
-    testingData(i+1200,:) = reshape(fastWalk_feat1(:,:,i+1200), 1, 80);
+parfor i = 1:1200
+    testingData1(i+1200,:) = reshape(fastWalk_feat_norm1(:,:,i+1200), 1, 80);
+    testingData2(i+1200,:) = reshape(fastWalk_feat_norm2(:,:,i+1200), 1, 80);
     testingLabels{i+1200} = 'fastWalk';
 end
 
-for i = 1:1200
-    testingData(i+2400,:) = reshape(sitting_feat1(:,:,i+1200), 1, 80);
+parfor i = 1:1200
+    testingData1(i+2400,:) = reshape(sitting_feat_norm1(:,:,i+1200), 1, 80);
+    testingData2(i+2400,:) = reshape(sitting_feat_norm2(:,:,i+1200), 1, 80);
     testingLabels{i+2400} = 'sitting';
 end
 
-for i = 1:1200
-    testingData(i+3600,:) = reshape(slowWalk_feat1(:,:,i+1200), 1, 80);
+parfor i = 1:1200
+    testingData1(i+3600,:) = reshape(slowWalk_feat_norm1(:,:,i+1200), 1, 80);
+    testingData2(i+3600,:) = reshape(slowWalk_feat_norm2(:,:,i+1200), 1, 80);
     testingLabels{i+3600} = 'slowWalk';
 end
 
-for i = 1:1200
-    testingData(i+4800,:) = reshape(standing_feat1(:,:,i+1200), 1, 80);
+parfor i = 1:1200
+    testingData1(i+4800,:) = reshape(standing_feat_norm1(:,:,i+1200), 1, 80);
+    testingData2(i+4800,:) = reshape(standing_feat_norm2(:,:,i+1200), 1, 80);
     testingLabels{i+4800} = 'standing';
 end
 
-testingLabels = testingLabels';
+parfor i = 1:1200
+    testingData1(i+6000,:) = reshape(ascent_feat_norm1(:,:,i+1200), 1, 80);
+    testingData2(i+6000,:) = reshape(ascent_feat_norm2(:,:,i+1200), 1, 80);
+    testingLabels{i+6000} = 'stair ascent';
+end
+
+parfor i = 1:1200
+    testingData1(i+7200,:) = reshape(descent_feat_norm1(:,:,i+1200), 1, 80);
+    testingData2(i+7200,:) = reshape(descent_feat_norm2(:,:,i+1200), 1, 80);
+    testingLabels{i+7200} = 'stair descent';
+end
+
+parfor i = 1:1200
+    testingData1(i+8400,:) = reshape(dorsi_feat_norm1(:,:,i+1200), 1, 80);
+    testingData2(i+8400,:) = reshape(dorsi_feat_norm2(:,:,i+1200), 1, 80);
+    testingLabels{i+8400} = 'dorsi';
+end
+
+parfor i = 1:1200
+    testingData1(i+9600,:) = reshape(plantar_feat_norm1(:,:,i+1200), 1, 80);
+    testingData2(i+9600,:) = reshape(plantar_feat_norm2(:,:,i+1200), 1, 80);
+    testingLabels{i+9600} = 'plantar';
+end
+
+% Put together testing matrix based up which data was selected above.
+if strcmp(testing, 'P1')
+    testingData = testingData1;
+    testingLabels = testingLabels';
+elseif strcmp(testing, 'P2')
+    testingData = testingData2;
+    testingLabels = testingLabels';
+elseif strcmp(testing, 'P1&P2')
+    testingData = vertcat(testingData1,testingData2);
+    testingLabels = vertcat(testingLabels', testingLabels');
+end
+
+
+
 
 %% Create the classifier
 
