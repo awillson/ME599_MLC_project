@@ -336,7 +336,15 @@ x9 = x(index(8)+1:grad:end); y9 = y(index(8)+1:grad:end);z9 = z(index(8)+1:grad:
 
 figure
 subplot(1,4,1), grid on, hold on
-
+% 1 = crouch red
+% 2 = fasWalk blue
+% 3 = sitting green
+% 4 = slow    yellow
+% 5 = sstand   cyan
+% 6 = ascent   magenta
+% 7 = descent  black
+% 8 = dorsiflec  
+% 9 = plantarflex
     plot(x1,y1,'ro','LineWidth',2); hold on    
     plot(x3,y3,'go','LineWidth',2);
     plot(x5,y5,'co','LineWidth',2);
@@ -358,16 +366,8 @@ subplot(1,4,2), grid on, hold on
     plot(y3,z3,'go','LineWidth',2);
     plot(y6,z6,'mo','LineWidth',2);
     plot(y7,z7,'ko','LineWidth',2);
-    % 1 = crouch red
-% 2 = fasWalk blue
-% 3 = sitting green
-% 4 = slow    yellow
-% 5 = sstand   cyan
-% 6 = ascent   magenta
-% 7 = descent  black
-% 8 = dorsiflec  reddish
-% 9 = plantarflex  blueish
-    legend('crouch','fastWalk','slowWalk','dorsiflex','plantarflex','standing','sitting','stair ascent','stair descent')
+    %cla
+    legend('crouch','fastWalk','slowWalk','standing','stair ascent','stair descent','sitting','dorsiflex','plantarflex')
     xlabel('ascent, descent')
     ylabel('sit, stand')
 subplot(1,4,3), grid on, hold on
