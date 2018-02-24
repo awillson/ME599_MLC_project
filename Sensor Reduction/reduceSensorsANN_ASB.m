@@ -193,27 +193,37 @@ Xlabels = [trainingLabels; testingLabels];
 numSamp = size(X,1);
 trainSize = floor(numSamp*0.8);
 
+for i = 1:length(Xlabels)
+    
+    if strcmp(Xlabels(i),'fastWalk')
+        Xtargets(i,:) = [1 0 0 0 0 0];
+    elseif strcmp(Xlabels(i),'slowWalk')
+        Xtargets(i,:) = [0 1 0 0 0 0];
+    elseif strcmp(Xlabels(i),'sitting')
+        Xtargets(i,:) = [0 0 1 0 0 0];
+    elseif strcmp(Xlabels(i),'standing')
+        Xtargets(i,:) = [0 0 0 1 0 0];
+    elseif strcmp(Xlabels(i), 'stair ascent')
+        Xtargets(i,:) = [0 0 0 0 1 0];
+    elseif strcmp(Xlabels(i), 'stair descent')
+        Xtargets(i,:) = [0 0 0 0 0 1];
+    end
+    
+end
+
 indVec = randperm(numSamp)';
 
 randX = X(indVec,:);
 randLabs = Xlabels(indVec);
 
 trainingData = randX(1:trainSize,:);
-trainingLabels = randLabs(1:trainSize);
+XtrainTargets = Xtargets(indVec(1:trainSize),:)';
 
 testingData = randX(trainSize+1:end,:);
-testingLabels = randLabs(trainSize+1:end);
-
-[u,s,v] = svd(trainingData','econ');
-trainingData = v;
-testingData = inv(s)*u'*testingData';
-testingData = testingData';
-
-SVMclassifier = fitcecoc(trainingData,trainingLabels);
-
-accuracy = evaluateClassifier_ASB(SVMclassifier,testingData,testingLabels);
+XtestTargets = Xtargets(indVec(trainSize+1:end),:)';
 
 for i = 0:15
+    i
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
      
@@ -225,15 +235,33 @@ for i = 0:15
     
     % cast into svd basis
     [u,s,v] = svd(trainingDataCut','econ');
-    trainingDataCut = v;
+    trainingDataCut = v';
     testingDataCut = inv(s)*u'*testingDataCut';
-    testingDataCut = testingDataCut';
-    
-    SVMclassifier = fitcecoc(trainingDataCut,trainingLabels);
 
-    accuracy1(i+1) = evaluateClassifier_ASB(SVMclassifier,testingDataCut,testingLabels);
+ % Create a Pattern Recognition Network
+    hiddenLayerSize = 10;
+    net = patternnet(hiddenLayerSize);
+
+    % Set up Division of Data for Training, Validation, Testing
+    net.divideParam.trainRatio = 90/100;
+    net.divideParam.valRatio = 5/100;
+    net.divideParam.testRatio = 5/100;
+ 
+    % Train the Network
+    [net,tr] = train(net,trainingDataCut,XtrainTargets);
+
+    % Test the Network
+    outputs = net(testingDataCut);
+    outRound = round(outputs);
+    
+    for p = 1:size(outRound,2)
+        rightOrWrong(p) = isequal(outRound(:,p), XtestTargets(:,p));
+    end
+    
+    accuracy1(i+1) = sum(rightOrWrong)/length(rightOrWrong); 
+    clear net rightOrWrong
 end
-% keyboard
+
 
 [a1,b1] = max(accuracy1);
 sensorLabels(b1) = [];
@@ -295,9 +323,9 @@ clear cutStart cutEnd
 %% Second round
 disp('2')
 % keyboard
-parfor i = 0:14
+for i = 0:14
     
-    cutStart(i+1) = 5*i+1;
+     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
      
     trainingDataCut = trainingData;
@@ -308,13 +336,32 @@ parfor i = 0:14
     
     % cast into svd basis
     [u,s,v] = svd(trainingDataCut','econ');
-    trainingDataCut = v;
+    trainingDataCut = v';
     testingDataCut = inv(s)*u'*testingDataCut';
-    testingDataCut = testingDataCut';
+    testingDataCut = testingDataCut;
+
+ % Create a Pattern Recognition Network
+    hiddenLayerSize = 10;
+    net = patternnet(hiddenLayerSize);
+
+    % Set up Division of Data for Training, Validation, Testing
+    net.divideParam.trainRatio = 90/100;
+    net.divideParam.valRatio = 5/100;
+    net.divideParam.testRatio = 5/100;
+ 
+    % Train the Network
+    [net,tr] = train(net,trainingDataCut,XtrainTargets);
+
+    % Test the Network
+    outputs = net(testingDataCut);
+    outRound = round(outputs);
     
-    SVMclassifier = fitcecoc(trainingDataCut,trainingLabels);
+    for p = 1:size(outRound,2)
+        rightOrWrong(p) = isequal(outRound(:,p), XtestTargets(:,p));
+    end
     
-    accuracy2(i+1) = evaluateClassifier_ASB(SVMclassifier,testingDataCut,testingLabels);
+    accuracy2(i+1) = sum(rightOrWrong)/length(rightOrWrong); 
+    clear net rightOrWrong
 end
 
 [a2,b2] = max(accuracy2);
@@ -374,8 +421,8 @@ clear cutStart cutEnd
 %% third round
 disp('3')
 
-parfor i = 0:13
-    cutStart(i+1) = 5*i+1;
+for i = 0:13
+     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
      
     trainingDataCut = trainingData;
@@ -386,12 +433,32 @@ parfor i = 0:13
     
     % cast into svd basis
     [u,s,v] = svd(trainingDataCut','econ');
-    trainingDataCut = v;
+    trainingDataCut = v';
     testingDataCut = inv(s)*u'*testingDataCut';
-    testingDataCut = testingDataCut';
+    testingDataCut = testingDataCut;
+
+ % Create a Pattern Recognition Network
+    hiddenLayerSize = 10;
+    net = patternnet(hiddenLayerSize);
+
+    % Set up Division of Data for Training, Validation, Testing
+    net.divideParam.trainRatio = 90/100;
+    net.divideParam.valRatio = 5/100;
+    net.divideParam.testRatio = 5/100;
+ 
+    % Train the Network
+    [net,tr] = train(net,trainingDataCut,XtrainTargets);
+
+    % Test the Network
+    outputs = net(testingDataCut);
+    outRound = round(outputs);
     
-    SVMclassifier = fitcecoc(trainingDataCut,trainingLabels);
-    accuracy3(i+1) = evaluateClassifier_ASB(SVMclassifier,testingDataCut,testingLabels);
+    for p = 1:size(outRound,2)
+        rightOrWrong(p) = isequal(outRound(:,p), XtestTargets(:,p));
+    end
+    
+    accuracy3(i+1) = sum(rightOrWrong)/length(rightOrWrong); 
+    clear net rightOrWrong
 end
 
 [a3,b3] = max(accuracy3);
@@ -448,8 +515,8 @@ clear cutStart cutEnd
 %% fourth round
 disp('4')
 
-parfor i = 0:12
-    cutStart(i+1) = 5*i+1;
+for i = 0:12
+     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
      
     trainingDataCut = trainingData;
@@ -460,13 +527,32 @@ parfor i = 0:12
     
     % cast into svd basis
     [u,s,v] = svd(trainingDataCut','econ');
-    trainingDataCut = v;
+    trainingDataCut = v';
     testingDataCut = inv(s)*u'*testingDataCut';
-    testingDataCut = testingDataCut';
+    testingDataCut = testingDataCut;
+
+ % Create a Pattern Recognition Network
+    hiddenLayerSize = 10;
+    net = patternnet(hiddenLayerSize);
+
+    % Set up Division of Data for Training, Validation, Testing
+    net.divideParam.trainRatio = 90/100;
+    net.divideParam.valRatio = 5/100;
+    net.divideParam.testRatio = 5/100;
+ 
+    % Train the Network
+    [net,tr] = train(net,trainingDataCut,XtrainTargets);
+
+    % Test the Network
+    outputs = net(testingDataCut);
+    outRound = round(outputs);
     
-    SVMclassifier = fitcecoc(trainingDataCut,trainingLabels);
-    accuracy4(i+1) = evaluateClassifier_ASB(SVMclassifier,testingDataCut,testingLabels);
-end
+    for p = 1:size(outRound,2)
+        rightOrWrong(p) = isequal(outRound(:,p), XtestTargets(:,p));
+    end
+    
+    accuracy4(i+1) = sum(rightOrWrong)/length(rightOrWrong); 
+    clear net rightOrWrong
 
 [a4,b4] = max(accuracy4);
 sensorLabels(b4) = [];
@@ -519,8 +605,8 @@ clear cutStart cutEnd
 %% fifth round
 disp('5')
 
-parfor i = 0:11
-    cutStart(i+1) = 5*i+1;
+for i = 0:11
+     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
      
     trainingDataCut = trainingData;
@@ -531,12 +617,31 @@ parfor i = 0:11
     
     % cast into svd basis
     [u,s,v] = svd(trainingDataCut','econ');
-    trainingDataCut = v;
+    trainingDataCut = v';
     testingDataCut = inv(s)*u'*testingDataCut';
-    testingDataCut = testingDataCut';
+
+ % Create a Pattern Recognition Network
+    hiddenLayerSize = 10;
+    net = patternnet(hiddenLayerSize);
+
+    % Set up Division of Data for Training, Validation, Testing
+    net.divideParam.trainRatio = 90/100;
+    net.divideParam.valRatio = 5/100;
+    net.divideParam.testRatio = 5/100;
+ 
+    % Train the Network
+    [net,tr] = train(net,trainingDataCut,XtrainTargets);
+
+    % Test the Network
+    outputs = net(testingDataCut);
+    outRound = round(outputs);
     
-    SVMclassifier = fitcecoc(trainingDataCut,trainingLabels);
-    accuracy5(i+1) = evaluateClassifier_ASB(SVMclassifier,testingDataCut,testingLabels);
+    for p = 1:size(outRound,2)
+        rightOrWrong(p) = isequal(outRound(:,p), XtestTargets(:,p));
+    end
+    
+    accuracy5(i+1) = sum(rightOrWrong)/length(rightOrWrong); 
+    clear net rightOrWrong
 end
 
 [a5,b5] = max(accuracy5);
@@ -587,8 +692,8 @@ clear cutStart cutEnd
 %% sixth round
 disp('6')
 
-parfor i = 0:10
-    cutStart(i+1) = 5*i+1;
+for i = 0:10
+     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
      
     trainingDataCut = trainingData;
@@ -599,12 +704,31 @@ parfor i = 0:10
     
     % cast into svd basis
     [u,s,v] = svd(trainingDataCut','econ');
-    trainingDataCut = v;
+    trainingDataCut = v';
     testingDataCut = inv(s)*u'*testingDataCut';
-    testingDataCut = testingDataCut';
+
+ % Create a Pattern Recognition Network
+    hiddenLayerSize = 10;
+    net = patternnet(hiddenLayerSize);
+
+    % Set up Division of Data for Training, Validation, Testing
+    net.divideParam.trainRatio = 90/100;
+    net.divideParam.valRatio = 5/100;
+    net.divideParam.testRatio = 5/100;
+ 
+    % Train the Network
+    [net,tr] = train(net,trainingDataCut,XtrainTargets);
+
+    % Test the Network
+    outputs = net(testingDataCut);
+    outRound = round(outputs);
     
-    SVMclassifier = fitcecoc(trainingDataCut,trainingLabels);
-    accuracy6(i+1) = evaluateClassifier_ASB(SVMclassifier,testingDataCut,testingLabels);
+    for p = 1:size(outRound,2)
+        rightOrWrong(p) = isequal(outRound(:,p), XtestTargets(:,p));
+    end
+    
+    accuracy6(i+1) = sum(rightOrWrong)/length(rightOrWrong); 
+    clear net rightOrWrong
 end
 
 [a6,b6] = max(accuracy6);
@@ -652,8 +776,8 @@ clear cutStart cutEnd
 %% seventh round
 disp('7')
 
-parfor i = 0:9
-    cutStart(i+1) = 5*i+1;
+for i = 0:9
+     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
      
     trainingDataCut = trainingData;
@@ -664,12 +788,32 @@ parfor i = 0:9
     
     % cast into svd basis
     [u,s,v] = svd(trainingDataCut','econ');
-    trainingDataCut = v;
+    trainingDataCut = v';
     testingDataCut = inv(s)*u'*testingDataCut';
-    testingDataCut = testingDataCut';
+
+
+ % Create a Pattern Recognition Network
+    hiddenLayerSize = 10;
+    net = patternnet(hiddenLayerSize);
+
+    % Set up Division of Data for Training, Validation, Testing
+    net.divideParam.trainRatio = 90/100;
+    net.divideParam.valRatio = 5/100;
+    net.divideParam.testRatio = 5/100;
+ 
+    % Train the Network
+    [net,tr] = train(net,trainingDataCut,XtrainTargets);
+
+    % Test the Network
+    outputs = net(testingDataCut);
+    outRound = round(outputs);
     
-    SVMclassifier = fitcecoc(trainingDataCut,trainingLabels);
-    accuracy7(i+1) = evaluateClassifier_ASB(SVMclassifier,testingDataCut,testingLabels);
+    for p = 1:size(outRound,2)
+        rightOrWrong(p) = isequal(outRound(:,p), XtestTargets(:,p));
+    end
+    
+    accuracy7(i+1) = sum(rightOrWrong)/length(rightOrWrong); 
+    clear net rightOrWrong
 end
 
 [a7,b7] = max(accuracy7);
@@ -714,7 +858,8 @@ clear cutStart cutEnd
 %% eigth round
 disp('8')
 
-parfor i = 0:8
+for i = 0:8
+    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
      
@@ -726,12 +871,32 @@ parfor i = 0:8
     
     % cast into svd basis
     [u,s,v] = svd(trainingDataCut','econ');
-    trainingDataCut = v;
+    trainingDataCut = v';
     testingDataCut = inv(s)*u'*testingDataCut';
-    testingDataCut = testingDataCut';
+
+ % Create a Pattern Recognition Network
+    hiddenLayerSize = 10;
+    net = patternnet(hiddenLayerSize);
+
+    % Set up Division of Data for Training, Validation, Testing
+    net.divideParam.trainRatio = 90/100;
+    net.divideParam.valRatio = 5/100;
+    net.divideParam.testRatio = 5/100;
+ 
+    % Train the Network
+    [net,tr] = train(net,trainingDataCut,XtrainTargets);
+
+    % Test the Network
+    outputs = net(testingDataCut);
+    outRound = round(outputs);
     
-    SVMclassifier = fitcecoc(trainingDataCut,trainingLabels);
-    accuracy8(i+1) = evaluateClassifier_ASB(SVMclassifier,testingDataCut,testingLabels);
+    for p = 1:size(outRound,2)
+        rightOrWrong(p) = isequal(outRound(:,p), XtestTargets(:,p));
+    end
+    
+    accuracy8(i+1) = sum(rightOrWrong)/length(rightOrWrong); 
+    clear net rightOrWrong
+    
 end
 
 [a8,b8] = max(accuracy8);
@@ -773,7 +938,7 @@ clear cutStart cutEnd
 %% ninth round
 disp('9')
 
-parfor i = 0:7
+for i = 0:7
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
      
@@ -785,12 +950,31 @@ parfor i = 0:7
     
     % cast into svd basis
     [u,s,v] = svd(trainingDataCut','econ');
-    trainingDataCut = v;
+    trainingDataCut = v';
     testingDataCut = inv(s)*u'*testingDataCut';
-    testingDataCut = testingDataCut';
+
+ % Create a Pattern Recognition Network
+    hiddenLayerSize = 10;
+    net = patternnet(hiddenLayerSize);
+
+    % Set up Division of Data for Training, Validation, Testing
+    net.divideParam.trainRatio = 90/100;
+    net.divideParam.valRatio = 5/100;
+    net.divideParam.testRatio = 5/100;
+ 
+    % Train the Network
+    [net,tr] = train(net,trainingDataCut,XtrainTargets);
+
+    % Test the Network
+    outputs = net(testingDataCut);
+    outRound = round(outputs);
     
-    SVMclassifier = fitcecoc(trainingDataCut,trainingLabels);
-    accuracy9(i+1) = evaluateClassifier_ASB(SVMclassifier,testingDataCut,testingLabels);
+    for p = 1:size(outRound,2)
+        rightOrWrong(p) = isequal(outRound(:,p), XtestTargets(:,p));
+    end
+    
+    accuracy9(i+1) = sum(rightOrWrong)/length(rightOrWrong); 
+    clear net rightOrWrong
 end
 
 [a9,b9] = max(accuracy9);
@@ -829,7 +1013,7 @@ clear cutStart cutEnd
 %% tenth round
 disp('10')
 
-parfor i = 0:6
+for i = 0:6
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
      
@@ -841,12 +1025,31 @@ parfor i = 0:6
     
     % cast into svd basis
     [u,s,v] = svd(trainingDataCut','econ');
-    trainingDataCut = v;
+    trainingDataCut = v';
     testingDataCut = inv(s)*u'*testingDataCut';
-    testingDataCut = testingDataCut';
+
+ % Create a Pattern Recognition Network
+    hiddenLayerSize = 10;
+    net = patternnet(hiddenLayerSize);
+
+    % Set up Division of Data for Training, Validation, Testing
+    net.divideParam.trainRatio = 90/100;
+    net.divideParam.valRatio = 5/100;
+    net.divideParam.testRatio = 5/100;
+ 
+    % Train the Network
+    [net,tr] = train(net,trainingDataCut,XtrainTargets);
+
+    % Test the Network
+    outputs = net(testingDataCut);
+    outRound = round(outputs);
     
-    SVMclassifier = fitcecoc(trainingDataCut,trainingLabels);
-    accuracy10(i+1) = evaluateClassifier_ASB(SVMclassifier,testingDataCut,testingLabels);
+    for p = 1:size(outRound,2)
+        rightOrWrong(p) = isequal(outRound(:,p), XtestTargets(:,p));
+    end
+    
+    accuracy10(i+1) = sum(rightOrWrong)/length(rightOrWrong); 
+    clear net rightOrWrong
 end
 
 [a10,b10] = max(accuracy10);
@@ -882,8 +1085,8 @@ clear cutStart cutEnd
 %% eleventh round
 disp('11')
 
-parfor i = 0:5
-    cutStart(i+1) = 5*i+1;
+for i = 0:5
+     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
      
     trainingDataCut = trainingData;
@@ -894,12 +1097,31 @@ parfor i = 0:5
     
     % cast into svd basis
     [u,s,v] = svd(trainingDataCut','econ');
-    trainingDataCut = v;
+    trainingDataCut = v';
     testingDataCut = inv(s)*u'*testingDataCut';
-    testingDataCut = testingDataCut';
+
+ % Create a Pattern Recognition Network
+    hiddenLayerSize = 10;
+    net = patternnet(hiddenLayerSize);
+
+    % Set up Division of Data for Training, Validation, Testing
+    net.divideParam.trainRatio = 90/100;
+    net.divideParam.valRatio = 5/100;
+    net.divideParam.testRatio = 5/100;
+ 
+    % Train the Network
+    [net,tr] = train(net,trainingDataCut,XtrainTargets);
+
+    % Test the Network
+    outputs = net(testingDataCut);
+    outRound = round(outputs);
     
-    SVMclassifier = fitcecoc(trainingDataCut,trainingLabels);
-    accuracy11(i+1) = evaluateClassifier_ASB(SVMclassifier,testingDataCut,testingLabels);
+    for p = 1:size(outRound,2)
+        rightOrWrong(p) = isequal(outRound(:,p), XtestTargets(:,p));
+    end
+    
+    accuracy11(i+1) = sum(rightOrWrong)/length(rightOrWrong); 
+    clear net rightOrWrong
 end
 
 [a11,b11] = max(accuracy11);
@@ -932,8 +1154,8 @@ clear cutStart cutEnd
 %% twelfth round
 disp('12')
 
-parfor i = 0:4
-    cutStart(i+1) = 5*i+1;
+for i = 0:4
+     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
      
     trainingDataCut = trainingData;
@@ -944,12 +1166,31 @@ parfor i = 0:4
     
     % cast into svd basis
     [u,s,v] = svd(trainingDataCut','econ');
-    trainingDataCut = v;
+    trainingDataCut = v';
     testingDataCut = inv(s)*u'*testingDataCut';
-    testingDataCut = testingDataCut';
+
+    % Create a Pattern Recognition Network
+    hiddenLayerSize = 10;
+    net = patternnet(hiddenLayerSize);
+
+    % Set up Division of Data for Training, Validation, Testing
+    net.divideParam.trainRatio = 90/100;
+    net.divideParam.valRatio = 5/100;
+    net.divideParam.testRatio = 5/100;
+ 
+    % Train the Network
+    [net,tr] = train(net,trainingDataCut,XtrainTargets);
+
+    % Test the Network
+    outputs = net(testingDataCut);
+    outRound = round(outputs);
     
-    SVMclassifier = fitcecoc(trainingDataCut,trainingLabels);
-    accuracy12(i+1) = evaluateClassifier_ASB(SVMclassifier,testingDataCut,testingLabels);
+    for p = 1:size(outRound,2)
+        rightOrWrong(p) = isequal(outRound(:,p), XtestTargets(:,p));
+    end
+    
+    accuracy12(i+1) = sum(rightOrWrong)/length(rightOrWrong); 
+    clear net rightOrWrong
 end
 
 [a12,b12] = max(accuracy12);
@@ -978,8 +1219,8 @@ clear cutStart cutEnd
 
 %% thirteenth round
 disp('13')
-parfor i = 0:3
-    cutStart(i+1) = 5*i+1;
+for i = 0:3
+     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
      
     trainingDataCut = trainingData;
@@ -990,12 +1231,31 @@ parfor i = 0:3
     
     % cast into svd basis
     [u,s,v] = svd(trainingDataCut','econ');
-    trainingDataCut = v;
+    trainingDataCut = v';
     testingDataCut = inv(s)*u'*testingDataCut';
-    testingDataCut = testingDataCut';
+
+ % Create a Pattern Recognition Network
+    hiddenLayerSize = 10;
+    net = patternnet(hiddenLayerSize);
+
+    % Set up Division of Data for Training, Validation, Testing
+    net.divideParam.trainRatio = 90/100;
+    net.divideParam.valRatio = 5/100;
+    net.divideParam.testRatio = 5/100;
+ 
+    % Train the Network
+    [net,tr] = train(net,trainingDataCut,XtrainTargets);
+
+    % Test the Network
+    outputs = net(testingDataCut);
+    outRound = round(outputs);
     
-    SVMclassifier = fitcecoc(trainingDataCut,trainingLabels);
-    accuracy13(i+1) = evaluateClassifier_ASB(SVMclassifier,testingDataCut,testingLabels);
+    for p = 1:size(outRound,2)
+        rightOrWrong(p) = isequal(outRound(:,p), XtestTargets(:,p));
+    end
+    
+    accuracy13(i+1) = sum(rightOrWrong)/length(rightOrWrong); 
+    clear net rightOrWrong
 end
 
 [a13,b13] = max(accuracy13);
@@ -1021,8 +1281,8 @@ clear cutStart cutEnd
 
 %% fourteenth round
 disp('14')
-parfor i = 0:2
-    cutStart(i+1) = 5*i+1;
+for i = 0:2
+     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
      
     trainingDataCut = trainingData;
@@ -1033,12 +1293,31 @@ parfor i = 0:2
     
     % cast into svd basis
     [u,s,v] = svd(trainingDataCut','econ');
-    trainingDataCut = v;
+    trainingDataCut = v';
     testingDataCut = inv(s)*u'*testingDataCut';
-    testingDataCut = testingDataCut';
+
+ % Create a Pattern Recognition Network
+    hiddenLayerSize = 10;
+    net = patternnet(hiddenLayerSize);
+
+    % Set up Division of Data for Training, Validation, Testing
+    net.divideParam.trainRatio = 90/100;
+    net.divideParam.valRatio = 5/100;
+    net.divideParam.testRatio = 5/100;
+ 
+    % Train the Network
+    [net,tr] = train(net,trainingDataCut,XtrainTargets);
+
+    % Test the Network
+    outputs = net(testingDataCut);
+    outRound = round(outputs);
     
-    SVMclassifier = fitcecoc(trainingDataCut,trainingLabels);
-    accuracy14(i+1) = evaluateClassifier_ASB(SVMclassifier,testingDataCut,testingLabels);
+    for p = 1:size(outRound,2)
+        rightOrWrong(p) = isequal(outRound(:,p), XtestTargets(:,p));
+    end
+    
+    accuracy14(i+1) = sum(rightOrWrong)/length(rightOrWrong); 
+    clear net rightOrWrong
 end
 
 [a14,b14] = max(accuracy14);
@@ -1061,8 +1340,8 @@ clear cutStart cutEnd
 
 %% fifteenth round
 disp('15')
-parfor i = 0:1
-    cutStart(i+1) = 5*i+1;
+for i = 0:1
+     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
      
     trainingDataCut = trainingData;
@@ -1073,12 +1352,31 @@ parfor i = 0:1
     
     % cast into svd basis
     [u,s,v] = svd(trainingDataCut','econ');
-    trainingDataCut = v;
+    trainingDataCut = v';
     testingDataCut = inv(s)*u'*testingDataCut';
-    testingDataCut = testingDataCut';
+
+ % Create a Pattern Recognition Network
+    hiddenLayerSize = 10;
+    net = patternnet(hiddenLayerSize);
+
+    % Set up Division of Data for Training, Validation, Testing
+    net.divideParam.trainRatio = 90/100;
+    net.divideParam.valRatio = 5/100;
+    net.divideParam.testRatio = 5/100;
+ 
+    % Train the Network
+    [net,tr] = train(net,trainingDataCut,XtrainTargets);
+
+    % Test the Network
+    outputs = net(testingDataCut);
+    outRound = round(outputs);
     
-    SVMclassifier = fitcecoc(trainingDataCut,trainingLabels);
-    accuracy15(i+1) = evaluateClassifier_ASB(SVMclassifier,testingDataCut,testingLabels);
+    for p = 1:size(outRound,2)
+        rightOrWrong(p) = isequal(outRound(:,p), XtestTargets(:,p));
+    end
+    
+    accuracy15(i+1) = sum(rightOrWrong)/length(rightOrWrong); 
+    clear net rightOrWrong
 end
 
 [a15,b15] = max(accuracy15);
@@ -1101,16 +1399,16 @@ theCell = {accuracy1; accuracy2; accuracy3; accuracy4; accuracy5;...
                     accuracy11; accuracy12; accuracy13; accuracy14;...
                         accuracy15};
 
-parfor i = 1:15
+for i = 1:15
     maxAcc(i) = max(cell2mat(theCell(i)));
 end
 
 
 %%
 
-sensorsOrderedSVM = {};
+sensorsOrderedANN = {};
                             
-% sensorAccuracyPlotSVM = fliplr(maxAcc);
+% sensorAccuracyPlotLDA = fliplr(maxAcc);
 
-% save('sensorReductionResults.mat','sensorsOrderedSVM','sensorAccuracyPlotSVM')
+% save('sensorReductionResults.mat','sensorsOrderedLDA','sensorAccuracyPlotLDA')
 

@@ -208,23 +208,35 @@ testingLabels = randLabs(trainSize+1:end);
 [u,s,v] = svd(trainingData','econ');
 trainingData = v;
 testingData = inv(s)*u'*testingData';
+testingData = testingData';
 
-%%% WRONG NEED TO PUT SVD INSIDE THE LOOPS
+LDAclassifier = fitcdiscr(trainingData,trainingLabels);
+
+accuracy = evaluateClassifier_ASB(LDAclassifier,testingData,testingLabels)
+
 
 for i = 0:15
+    i
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
-    
+     
     trainingDataCut = trainingData;
     testingDataCut = testingData;
-    i
+    
     trainingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     testingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     
+    % cast into svd basis
+    [u,s,v] = svd(trainingDataCut','econ');
+    trainingDataCut = v;
+    testingDataCut = inv(s)*u'*testingDataCut';
+    testingDataCut = testingDataCut';
+    
     LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
-    keyboard
+
     accuracy1(i+1) = evaluateClassifier_ASB(LDAclassifier,testingDataCut,testingLabels);
 end
+keyboard
 
 [a1,b1] = max(accuracy1);
 sensorLabels(b1) = [];
@@ -285,20 +297,27 @@ clear cutStart cutEnd
 
 %% Second round
 disp('2')
+% keyboard
 parfor i = 0:14
     
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
-    
+     
     trainingDataCut = trainingData;
     testingDataCut = testingData;
     
     trainingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     testingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     
+    % cast into svd basis
+    [u,s,v] = svd(trainingDataCut','econ');
+    trainingDataCut = v;
+    testingDataCut = inv(s)*u'*testingDataCut';
+    testingDataCut = testingDataCut';
+    
     LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
     
-    accuracy2(i+1) = evaluateClassifier(LDAclassifier,testingDataCut);
+    accuracy2(i+1) = evaluateClassifier_ASB(LDAclassifier,testingDataCut,testingLabels);
 end
 
 [a2,b2] = max(accuracy2);
@@ -359,19 +378,23 @@ clear cutStart cutEnd
 disp('3')
 
 parfor i = 0:13
-    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
-    
+     
     trainingDataCut = trainingData;
     testingDataCut = testingData;
     
     trainingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     testingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     
-    LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
+    % cast into svd basis
+    [u,s,v] = svd(trainingDataCut','econ');
+    trainingDataCut = v;
+    testingDataCut = inv(s)*u'*testingDataCut';
+    testingDataCut = testingDataCut';
     
-    accuracy3(i+1) = evaluateClassifier(LDAclassifier,testingDataCut);
+    LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
+    accuracy3(i+1) = evaluateClassifier_ASB(LDAclassifier,testingDataCut,testingLabels);
 end
 
 [a3,b3] = max(accuracy3);
@@ -429,19 +452,23 @@ clear cutStart cutEnd
 disp('4')
 
 parfor i = 0:12
-    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
-    
+     
     trainingDataCut = trainingData;
     testingDataCut = testingData;
     
     trainingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     testingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     
-    LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
+    % cast into svd basis
+    [u,s,v] = svd(trainingDataCut','econ');
+    trainingDataCut = v;
+    testingDataCut = inv(s)*u'*testingDataCut';
+    testingDataCut = testingDataCut';
     
-    accuracy4(i+1) = evaluateClassifier(LDAclassifier,testingDataCut);
+    LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
+    accuracy4(i+1) = evaluateClassifier_ASB(LDAclassifier,testingDataCut,testingLabels);
 end
 
 [a4,b4] = max(accuracy4);
@@ -496,19 +523,23 @@ clear cutStart cutEnd
 disp('5')
 
 parfor i = 0:11
-    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
-    
+     
     trainingDataCut = trainingData;
     testingDataCut = testingData;
     
     trainingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     testingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     
-    LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
+    % cast into svd basis
+    [u,s,v] = svd(trainingDataCut','econ');
+    trainingDataCut = v;
+    testingDataCut = inv(s)*u'*testingDataCut';
+    testingDataCut = testingDataCut';
     
-    accuracy5(i+1) = evaluateClassifier(LDAclassifier,testingDataCut);
+    LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
+    accuracy5(i+1) = evaluateClassifier_ASB(LDAclassifier,testingDataCut,testingLabels);
 end
 
 [a5,b5] = max(accuracy5);
@@ -560,19 +591,23 @@ clear cutStart cutEnd
 disp('6')
 
 parfor i = 0:10
-    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
-    
+     
     trainingDataCut = trainingData;
     testingDataCut = testingData;
     
     trainingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     testingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     
-    LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
+    % cast into svd basis
+    [u,s,v] = svd(trainingDataCut','econ');
+    trainingDataCut = v;
+    testingDataCut = inv(s)*u'*testingDataCut';
+    testingDataCut = testingDataCut';
     
-    accuracy6(i+1) = evaluateClassifier(LDAclassifier,testingDataCut);
+    LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
+    accuracy6(i+1) = evaluateClassifier_ASB(LDAclassifier,testingDataCut,testingLabels);
 end
 
 [a6,b6] = max(accuracy6);
@@ -621,19 +656,23 @@ clear cutStart cutEnd
 disp('7')
 
 parfor i = 0:9
-    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
-    
+     
     trainingDataCut = trainingData;
     testingDataCut = testingData;
     
     trainingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     testingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     
-    LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
+    % cast into svd basis
+    [u,s,v] = svd(trainingDataCut','econ');
+    trainingDataCut = v;
+    testingDataCut = inv(s)*u'*testingDataCut';
+    testingDataCut = testingDataCut';
     
-    accuracy7(i+1) = evaluateClassifier(LDAclassifier,testingDataCut);
+    LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
+    accuracy7(i+1) = evaluateClassifier_ASB(LDAclassifier,testingDataCut,testingLabels);
 end
 
 [a7,b7] = max(accuracy7);
@@ -679,19 +718,23 @@ clear cutStart cutEnd
 disp('8')
 
 parfor i = 0:8
-    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
-    
+     
     trainingDataCut = trainingData;
     testingDataCut = testingData;
     
     trainingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     testingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     
-    LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
+    % cast into svd basis
+    [u,s,v] = svd(trainingDataCut','econ');
+    trainingDataCut = v;
+    testingDataCut = inv(s)*u'*testingDataCut';
+    testingDataCut = testingDataCut';
     
-    accuracy8(i+1) = evaluateClassifier(LDAclassifier,testingDataCut);
+    LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
+    accuracy8(i+1) = evaluateClassifier_ASB(LDAclassifier,testingDataCut,testingLabels);
 end
 
 [a8,b8] = max(accuracy8);
@@ -734,19 +777,23 @@ clear cutStart cutEnd
 disp('9')
 
 parfor i = 0:7
-    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
-    
+     
     trainingDataCut = trainingData;
     testingDataCut = testingData;
     
     trainingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     testingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     
-    LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
+    % cast into svd basis
+    [u,s,v] = svd(trainingDataCut','econ');
+    trainingDataCut = v;
+    testingDataCut = inv(s)*u'*testingDataCut';
+    testingDataCut = testingDataCut';
     
-    accuracy9(i+1) = evaluateClassifier(LDAclassifier,testingDataCut)
+    LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
+    accuracy9(i+1) = evaluateClassifier_ASB(LDAclassifier,testingDataCut,testingLabels);
 end
 
 [a9,b9] = max(accuracy9);
@@ -786,19 +833,23 @@ clear cutStart cutEnd
 disp('10')
 
 parfor i = 0:6
-    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
-    
+     
     trainingDataCut = trainingData;
     testingDataCut = testingData;
     
     trainingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     testingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     
-    LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
+    % cast into svd basis
+    [u,s,v] = svd(trainingDataCut','econ');
+    trainingDataCut = v;
+    testingDataCut = inv(s)*u'*testingDataCut';
+    testingDataCut = testingDataCut';
     
-    accuracy10(i+1) = evaluateClassifier(LDAclassifier,testingDataCut);
+    LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
+    accuracy10(i+1) = evaluateClassifier_ASB(LDAclassifier,testingDataCut,testingLabels);
 end
 
 [a10,b10] = max(accuracy10);
@@ -837,16 +888,21 @@ disp('11')
 parfor i = 0:5
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
-    
+     
     trainingDataCut = trainingData;
     testingDataCut = testingData;
     
     trainingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     testingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     
-    LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
+    % cast into svd basis
+    [u,s,v] = svd(trainingDataCut','econ');
+    trainingDataCut = v;
+    testingDataCut = inv(s)*u'*testingDataCut';
+    testingDataCut = testingDataCut';
     
-    accuracy11(i+1) = evaluateClassifier(LDAclassifier,testingDataCut);
+    LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
+    accuracy11(i+1) = evaluateClassifier_ASB(LDAclassifier,testingDataCut,testingLabels);
 end
 
 [a11,b11] = max(accuracy11);
@@ -880,19 +936,23 @@ clear cutStart cutEnd
 disp('12')
 
 parfor i = 0:4
-    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
-    
+     
     trainingDataCut = trainingData;
     testingDataCut = testingData;
     
     trainingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     testingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     
-    LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
+    % cast into svd basis
+    [u,s,v] = svd(trainingDataCut','econ');
+    trainingDataCut = v;
+    testingDataCut = inv(s)*u'*testingDataCut';
+    testingDataCut = testingDataCut';
     
-    accuracy12(i+1) = evaluateClassifier(LDAclassifier,testingDataCut);
+    LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
+    accuracy12(i+1) = evaluateClassifier_ASB(LDAclassifier,testingDataCut,testingLabels);
 end
 
 [a12,b12] = max(accuracy12);
@@ -922,19 +982,23 @@ clear cutStart cutEnd
 %% thirteenth round
 disp('13')
 parfor i = 0:3
-    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
-    
+     
     trainingDataCut = trainingData;
     testingDataCut = testingData;
     
     trainingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     testingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     
-    LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
+    % cast into svd basis
+    [u,s,v] = svd(trainingDataCut','econ');
+    trainingDataCut = v;
+    testingDataCut = inv(s)*u'*testingDataCut';
+    testingDataCut = testingDataCut';
     
-    accuracy13(i+1) = evaluateClassifier(LDAclassifier,testingDataCut);
+    LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
+    accuracy13(i+1) = evaluateClassifier_ASB(LDAclassifier,testingDataCut,testingLabels);
 end
 
 [a13,b13] = max(accuracy13);
@@ -961,19 +1025,23 @@ clear cutStart cutEnd
 %% fourteenth round
 disp('14')
 parfor i = 0:2
-    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
-    
+     
     trainingDataCut = trainingData;
     testingDataCut = testingData;
     
     trainingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     testingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     
-    LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
+    % cast into svd basis
+    [u,s,v] = svd(trainingDataCut','econ');
+    trainingDataCut = v;
+    testingDataCut = inv(s)*u'*testingDataCut';
+    testingDataCut = testingDataCut';
     
-    accuracy14(i+1) = evaluateClassifier(LDAclassifier,testingDataCut);
+    LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
+    accuracy14(i+1) = evaluateClassifier_ASB(LDAclassifier,testingDataCut,testingLabels);
 end
 
 [a14,b14] = max(accuracy14);
@@ -997,19 +1065,23 @@ clear cutStart cutEnd
 %% fifteenth round
 disp('15')
 parfor i = 0:1
-    
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
-    
+     
     trainingDataCut = trainingData;
     testingDataCut = testingData;
     
     trainingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     testingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     
-    LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
+    % cast into svd basis
+    [u,s,v] = svd(trainingDataCut','econ');
+    trainingDataCut = v;
+    testingDataCut = inv(s)*u'*testingDataCut';
+    testingDataCut = testingDataCut';
     
-    accuracy15(i+1) = evaluateClassifier(LDAclassifier,testingDataCut);
+    LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
+    accuracy15(i+1) = evaluateClassifier_ASB(LDAclassifier,testingDataCut,testingLabels);
 end
 
 [a15,b15] = max(accuracy15);
@@ -1033,19 +1105,18 @@ theCell = {accuracy1; accuracy2; accuracy3; accuracy4; accuracy5;...
                         accuracy15};
 
 parfor i = 1:15
-    i
     maxAcc(i) = max(cell2mat(theCell(i)));
 end
 
 
 %%
 
-sensorsOrderedLDA = {'sensor7','sensor2','sensor15','sensor1',...
-                        'sensor11','sensor14','sensor4','sensor12',...
-                            'sensor3','sensor13','sensor10','sensor9',...
-                                'sensor8','sensor6','sensor5','sensor16'};
+sensorsOrderedLDA = {'sensor12', 'sensor3', 'sensor16', 'sensor9',...
+                     'sensor13','sensor14','sensor15','sensor7',...
+                     'sensor10','sensor11','sensor4','sensor2',...
+                     'sensor6', 'sensor8','sensor1','sensor5'};
                             
-sensorAccuracyPlotLDA = fliplr(maxAcc);
+% sensorAccuracyPlotLDA = fliplr(maxAcc);
 
-save('sensorReductionResults.mat','sensorsOrderedLDA','sensorAccuracyPlotLDA')
+% save('sensorReductionResults.mat','sensorsOrderedLDA','sensorAccuracyPlotLDA')
 

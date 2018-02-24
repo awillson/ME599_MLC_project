@@ -4,7 +4,7 @@ function [ acc ] = evaluateClassifier_ASB(classifierObj, testingData, testingLab
 %  in classify_LDA_norm.m
 
 %% Evaluate the classifier on the test data
-keyboard
+% keyboard
 ourPredictions = predict(classifierObj,testingData);
 rightOrWrong = strcmp(ourPredictions, testingLabels);
 
