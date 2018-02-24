@@ -7,24 +7,24 @@ clear; close all; clc;
 %% load
 
 % load crouch_featurized_norm1.mat
-load fastWalk_featurized_norm1.mat
-load slowWalk_featurized_norm1.mat
-load sitting_featurized_norm1.mat
-load standing_featurized_norm1.mat
+load fastWalk_featurized1.mat
+load slowWalk_featurized1.mat
+load sitting_featurized1.mat
+load standing_featurized1.mat
 % load dorsiFlex_featurized_norm1.mat
 % load plantarFlex_featurized_norm1.mat
-load stairAscent_featurized_norm1.mat
-load stairDescent_featurized_norm1.mat
+load stairAscent_featurized1.mat
+load stairDescent_featurized1.mat
 
 % load crouch_featurized_norm2.mat
-load fastWalk_featurized_norm2.mat
-load slowWalk_featurized_norm2.mat
-load sitting_featurized_norm2.mat
-load standing_featurized_norm2.mat
+load fastWalk_featurized2.mat
+load slowWalk_featurized2.mat
+load sitting_featurized2.mat
+load standing_featurized2.mat
 % load dorsiFlex_featurized_norm2.mat
 % load plantarFlex_featurized_norm2.mat
-load stairAscent_featurized_norm2.mat
-load stairDescent_featurized_norm2.mat
+load stairAscent_featurized2.mat
+load stairDescent_featurized2.mat
 
 %% Reshape the training data into format needed for training.
 
@@ -50,38 +50,38 @@ testing = 'P1&P2';
 
 
 parfor i = 1:1200
-    trainingData1(i,:) = reshape(fastWalk_feat_norm1(:,:,i), 1, 80);
-    trainingData2(i,:) = reshape(fastWalk_feat_norm2(:,:,i), 1, 80);
+    trainingData1(i,:) = reshape(fastWalk_feat1(:,:,i), 1, 80);
+    trainingData2(i,:) = reshape(fastWalk_feat2(:,:,i), 1, 80);
     trainingLabels{i} = 'fastWalk';
 end
 
 parfor i = 1:1200
-    trainingData1(i+1200,:) = reshape(sitting_feat_norm1(:,:,i), 1, 80);
-    trainingData2(i+1200,:) = reshape(sitting_feat_norm2(:,:,i), 1, 80);
+    trainingData1(i+1200,:) = reshape(sitting_feat1(:,:,i), 1, 80);
+    trainingData2(i+1200,:) = reshape(sitting_feat2(:,:,i), 1, 80);
     trainingLabels{i+1200} = 'sitting';
 end
 
 parfor i = 1:1200
-    trainingData1(i+2400,:) = reshape(slowWalk_feat_norm1(:,:,i), 1, 80);
-    trainingData2(i+2400,:) = reshape(slowWalk_feat_norm2(:,:,i), 1, 80);
+    trainingData1(i+2400,:) = reshape(slowWalk_feat1(:,:,i), 1, 80);
+    trainingData2(i+2400,:) = reshape(slowWalk_feat2(:,:,i), 1, 80);
     trainingLabels{i+2400} = 'slowWalk';
 end
 
 parfor i = 1:1200
-    trainingData1(i+3600,:) = reshape(standing_feat_norm1(:,:,i), 1, 80);
-    trainingData2(i+3600,:) = reshape(standing_feat_norm2(:,:,i), 1, 80);
+    trainingData1(i+3600,:) = reshape(standing_feat1(:,:,i), 1, 80);
+    trainingData2(i+3600,:) = reshape(standing_feat2(:,:,i), 1, 80);
     trainingLabels{i+3600} = 'standing';
 end
 
 parfor i = 1:1200
-    trainingData1(i+4800,:) = reshape(ascent_feat_norm1(:,:,i), 1, 80);
-    trainingData2(i+4800,:) = reshape(ascent_feat_norm2(:,:,i), 1, 80);
+    trainingData1(i+4800,:) = reshape(ascent_feat1(:,:,i), 1, 80);
+    trainingData2(i+4800,:) = reshape(ascent_feat2(:,:,i), 1, 80);
     trainingLabels{i+4800} = 'stair ascent';
 end
 
 parfor i = 1:1200
-    trainingData1(i+6000,:) = reshape(descent_feat_norm1(:,:,i), 1, 80);
-    trainingData2(i+6000,:) = reshape(descent_feat_norm2(:,:,i), 1, 80);
+    trainingData1(i+6000,:) = reshape(descent_feat1(:,:,i), 1, 80);
+    trainingData2(i+6000,:) = reshape(descent_feat2(:,:,i), 1, 80);
     trainingLabels{i+6000} = 'stair descent';
 end
 
@@ -118,38 +118,38 @@ end
 % end
 
 parfor i = 1:1200
-    testingData1(i,:) = reshape(fastWalk_feat_norm1(:,:,i+1200), 1, 80);
-    testingData2(i,:) = reshape(fastWalk_feat_norm2(:,:,i+1200), 1, 80);
+    testingData1(i,:) = reshape(fastWalk_feat1(:,:,i+1200), 1, 80);
+    testingData2(i,:) = reshape(fastWalk_feat2(:,:,i+1200), 1, 80);
     testingLabels{i} = 'fastWalk';
 end
 
 parfor i = 1:1200
-    testingData1(i+1200,:) = reshape(sitting_feat_norm1(:,:,i+1200), 1, 80);
-    testingData2(i+1200,:) = reshape(sitting_feat_norm2(:,:,i+1200), 1, 80);
+    testingData1(i+1200,:) = reshape(sitting_feat1(:,:,i+1200), 1, 80);
+    testingData2(i+1200,:) = reshape(sitting_feat2(:,:,i+1200), 1, 80);
     testingLabels{i+1200} = 'sitting';
 end
 
 parfor i = 1:1200
-    testingData1(i+2400,:) = reshape(slowWalk_feat_norm1(:,:,i+1200), 1, 80);
-    testingData2(i+2400,:) = reshape(slowWalk_feat_norm2(:,:,i+1200), 1, 80);
+    testingData1(i+2400,:) = reshape(slowWalk_feat1(:,:,i+1200), 1, 80);
+    testingData2(i+2400,:) = reshape(slowWalk_feat2(:,:,i+1200), 1, 80);
     testingLabels{i+2400} = 'slowWalk';
 end
 
 parfor i = 1:1200
-    testingData1(i+3600,:) = reshape(standing_feat_norm1(:,:,i+1200), 1, 80);
-    testingData2(i+3600,:) = reshape(standing_feat_norm2(:,:,i+1200), 1, 80);
+    testingData1(i+3600,:) = reshape(standing_feat1(:,:,i+1200), 1, 80);
+    testingData2(i+3600,:) = reshape(standing_feat2(:,:,i+1200), 1, 80);
     testingLabels{i+3600} = 'standing';
 end
 
 parfor i = 1:1200
-    testingData1(i+4800,:) = reshape(ascent_feat_norm1(:,:,i+1200), 1, 80);
-    testingData2(i+4800,:) = reshape(ascent_feat_norm2(:,:,i+1200), 1, 80);
+    testingData1(i+4800,:) = reshape(ascent_feat1(:,:,i+1200), 1, 80);
+    testingData2(i+4800,:) = reshape(ascent_feat2(:,:,i+1200), 1, 80);
     testingLabels{i+4800} = 'stair ascent';
 end
 
 parfor i = 1:1200
-    testingData1(i+6000,:) = reshape(descent_feat_norm1(:,:,i+1200), 1, 80);
-    testingData2(i+6000,:) = reshape(descent_feat_norm2(:,:,i+1200), 1, 80);
+    testingData1(i+6000,:) = reshape(descent_feat1(:,:,i+1200), 1, 80);
+    testingData2(i+6000,:) = reshape(descent_feat2(:,:,i+1200), 1, 80);
     testingLabels{i+6000} = 'stair descent';
 end
 
@@ -186,20 +186,44 @@ sensorLabels = {'sensor1','sensor2','sensor3','sensor4','sensor5',...
 
 %% First round
 disp('1')
-parfor i = 0:15
-    
+
+X = [trainingData; testingData];
+Xlabels = [trainingLabels; testingLabels];
+
+numSamp = size(X,1);
+trainSize = floor(numSamp*0.8);
+
+indVec = randperm(numSamp)';
+
+randX = X(indVec,:);
+randLabs = Xlabels(indVec);
+
+trainingData = randX(1:trainSize,:);
+trainingLabels = randLabs(1:trainSize);
+
+testingData = randX(trainSize+1:end,:);
+testingLabels = randLabs(trainSize+1:end);
+
+% cast into svd basis
+[u,s,v] = svd(trainingData','econ');
+trainingData = v;
+testingData = inv(s)*u'*testingData';
+
+%%% WRONG NEED TO PUT SVD INSIDE THE LOOPS
+
+for i = 0:15
     cutStart(i+1) = 5*i+1;
     cutEnd(i+1) = 5*i+5;
     
     trainingDataCut = trainingData;
     testingDataCut = testingData;
-    
+    i
     trainingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     testingDataCut(:,cutStart(i+1):cutEnd(i+1)) = [];
     
     LDAclassifier = fitcdiscr(trainingDataCut,trainingLabels);
-    
-    accuracy1(i+1) = evaluateClassifier(LDAclassifier,testingDataCut);
+    keyboard
+    accuracy1(i+1) = evaluateClassifier_ASB(LDAclassifier,testingDataCut,testingLabels);
 end
 
 [a1,b1] = max(accuracy1);
